@@ -275,43 +275,103 @@
           </div>
         </div>
   
+        <style>
+          .service-card {
+            position: relative;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: #f9f9f9;
+            cursor: pointer;
+          }
+        
+          .service-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+          }
+        
+          .services-logo {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #69b3a2;
+          }
+        
+          .service-card h4 {
+            margin-top: 10px;
+            font-weight: 600;
+          }
+        
+          .view-profile-btn {
+            display: none;
+            margin-top: 15px;
+            background-color: #69b3a2;
+            border: none;
+            padding: 8px 20px;
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+          }
+        
+          .view-profile-btn:hover {
+            background-color: #69b3a2;
+          }
+        
+          .service-card:hover .view-profile-btn {
+            display: inline-block;
+          }
+        </style>
+        
         <div class="row">
-  
+          <!-- QA & Manual Testing -->
           <div class="col-lg-3 text-center">
-            <a data-toggle="modal" href="https://www.fiverr.com/s/2DxaYX"><i class="fas fa-vial services-logo"></i></a>
-            <a data-toggle="modal" href="https://www.fiverr.com/s/2DxaYX">
-              <h4>QA & Manual Testing</h4>
+            <a href="https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share" target="_blank" style="text-decoration: none;">
+              <div class="service-card">
+                <i class="fas fa-vial services-logo"></i>
+                <h4>QA & Manual Testing</h4>
+                <p>Thorough test planning, case creation, and execution for quality assurance and defect tracking.</p>
+                <button class="view-profile-btn">Hire Me</button>
+              </div>
             </a>
-            <p>Thorough test planning, case creation, and execution for quality assurance and defect tracking.</p>
-            <a data-toggle="modal" href="https://www.fiverr.com/s/2DxaYX" style="font-size: 23px">+</a>
           </div>
-  
+        
+          <!-- Test Automation -->
           <div class="col-lg-3 text-center">
-            <a data-toggle="modal" href="https://www.fiverr.com/s/xZLWdX"><i class="fas fa-robot services-logo"></i></a>
-            <a data-toggle="modal" href="https://www.fiverr.com/s/xZLWdX">
-              <h4>Test Automation</h4>
+            <a href="https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share" target="_blank" style="text-decoration: none;">
+              <div class="service-card">
+                <i class="fas fa-robot services-logo"></i>
+                <h4>Test Automation</h4>
+                <p>Automated testing for web, API, and backend using Cypress, Playwright, and Selenium.</p>
+                <button class="view-profile-btn">Hire Me</button>
+              </div>
             </a>
-            <p>Automated testing for web, API, and backend services using tools like Cypress, Playwright, and Selenium.</p>
-            <a data-toggle="modal" href="https://www.fiverr.com/s/xZLWdX" style="font-size: 23px">+</a>
           </div>
+        
+          <!-- DevTestOps -->
           <div class="col-lg-3 text-center">
-            <a data-toggle="modal" href="#"><i class="fas fa-sync-alt services-logo"></i></a>
-            <a data-toggle="modal" href="#">
-              <h4>DevTestOps</h4>
+            <a href="https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share" target="_blank" style="text-decoration: none;">
+              <div class="service-card">
+                <i class="fas fa-sync-alt services-logo"></i>
+                <h4>DevTestOps</h4>
+                <p>Integrated testing within CI/CD pipelines for faster, reliable software delivery.</p>
+                <button class="view-profile-btn">Hire Me</button>
+              </div>
             </a>
-            <p>Integrated testing within CI/CD pipelines for faster, reliable software delivery.</p>
-            <a data-toggle="modal" href="#" style="font-size: 23px">+</a>
           </div>
-
+        
+          <!-- DevOps & CI/CD -->
           <div class="col-lg-3 text-center">
-            <a data-toggle="modal" href="#"><i class="fas fa-tools services-logo"></i></a>
-            <a data-toggle="modal" href="#">
-              <h4>DevOps & CI/CD</h4>
+            <a href="https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share" target="_blank" style="text-decoration: none;">
+              <div class="service-card">
+                <i class="fas fa-tools services-logo"></i>
+                <h4>DevOps & CI/CD</h4>
+                <p>Pipeline setup, IaC, containerization, and cloud deployments with Docker, Kubernetes, Ansible, AWS.</p>
+                <!-- <button class="view-profile-btn">Hire Me</button> -->
+              </div>
             </a>
-            <p>CI/CD pipeline setup, IaC, containerization, and cloud deployments with Docker, Kubernetes, Ansible, and AWS..</p>
-            <a data-toggle="modal" href="#" style="font-size: 23px">+</a>
           </div>
-  
+        </div>
+        
         
   
         </div>
@@ -841,7 +901,7 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
   .filter-btn.active, .filter-btn:hover {
-    background-color: #007bff;
+    background-color: #69b3a2;
     color: #fff;
   }
   .portfolio-item {
@@ -887,11 +947,11 @@
     transition: background-color 0.3s ease;
   }
   .btn-primary:hover {
-    background-color: #0056b3;
+    background-color: #69b3a2;
   }
   .btn-btn-success {
-  background-color: #0f8799;  /* Vibrant Orange */
-  color: white;
+  background-color: #69b3a2;  /* Vibrant Orange */
+  color: #f8f9fa ;
   padding: 12px 30px;
   font-size: 18px;
   border-radius: 5px;
@@ -980,8 +1040,8 @@
 
 
   .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
+      background-color: #69b3a2;
+      border-color: #69b3a2;
   }
 
   .btn-dark {
