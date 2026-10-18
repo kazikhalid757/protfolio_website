@@ -1,0 +1,63 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js Build Outputs & Cache
+/.next/
+/out/
+.next
+
+# Production & Distribution
+/build
+/dist
+
+# Testing & Coverage
+/coverage
+.nyc_output
+
+# Debug & Error Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Local Environment Variables & Secrets
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# Vercel Deployment Cache
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Temporary Files
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+
+# Cache files
+.eslintcache
+.cache/
