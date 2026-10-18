@@ -1,0 +1,417 @@
+{
+  "profile": {
+    "name": "Kazi Khalid Hasan Tamim",
+    "shortName": "Kazi Tamim",
+    "title": "QA & Test Automation Engineer | SDET",
+    "tagline": "Building fast, reliable test automation frameworks & CI/CD quality pipelines.",
+    "bio": "QA & Test Automation Engineer with 3+ years of experience optimizing test suites for web, mobile, and API microservices. Specializing in Playwright, Cypress, Selenium, and Dockerized CI/CD pipelines to guarantee zero-defect production releases.",
+    "email": "kazikhalid757@gmail.com",
+    "phone": "+8801580338155",
+    "location": "Mirpur-2, Dhaka - 1216, Bangladesh",
+    "avatar": "/images/me.jpg",
+    "resumeUrl": "https://flowcv.com/resume/1hsgus3psd",
+    "availableForHire": true,
+    "availabilityStatus": "Available for Full-time Roles & Contracts",
+    "metrics": {
+      "yearsExperience": "3+",
+      "automatedTestsExecuted": "18,500+",
+      "pipelinePassRate": "99.8%",
+      "bugsCaughtPreProd": "480+"
+    },
+    "socials": {
+      "linkedin": "https://www.linkedin.com/in/kazi-khalid-hasan-tamim-bba115220/",
+      "github": "https://github.com/kazikhalid757",
+      "upwork": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share",
+      "bughunters": "https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759",
+      "kaggle": "https://www.kaggle.com/kazikhalid757"
+    }
+  },
+  "services": [
+    {
+      "id": "srv-1",
+      "title": "Web Test Automation",
+      "icon": "Cpu",
+      "summary": "Fast, reliable end-to-end testing with Playwright, Cypress, and Selenium Grid.",
+      "deliverables": [
+        "Page Object Model (POM) architecture",
+        "Cross-browser execution (Chrome, Firefox, Safari)",
+        "Zero-flakiness auto-waiting assertions",
+        "Automated video & trace failure captures"
+      ],
+      "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
+    },
+    {
+      "id": "srv-2",
+      "title": "API & Contract Testing",
+      "icon": "Zap",
+      "summary": "Automated backend validation asserting status codes, schemas, and sub-100ms SLAs.",
+      "deliverables": [
+        "REST Assured & Postman/Newman automation",
+        "JSON Schema validation & contract testing",
+        "OAuth2 / JWT token lifecycle mocking",
+        "Regression gates for CI/CD pipelines"
+      ],
+      "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
+    },
+    {
+      "id": "srv-3",
+      "title": "DevTestOps & CI/CD",
+      "icon": "GitBranch",
+      "summary": "Containerized test runners blocking pull request merges on test regression.",
+      "deliverables": [
+        "GitHub Actions & Jenkins test workflows",
+        "Dockerized isolated test containers",
+        "Automated Allure & HTML test reports",
+        "Slack & Discord build alert integrations"
+      ],
+      "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
+    },
+    {
+      "id": "srv-4",
+      "title": "Manual QA & Security",
+      "icon": "CheckSquare",
+      "summary": "Thorough exploratory testing, test planning, and verified vulnerability reporting.",
+      "deliverables": [
+        "Detailed test plans & traceability matrices",
+        "JIRA defect reporting with root-cause analysis",
+        "Smoke, regression & sanity test cycles",
+        "Google Bug Hunters recognized researcher"
+      ],
+      "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Test Automation",
+      "items": [
+        { "name": "Playwright", "level": 95, "icon": "Terminal", "experience": "3 yrs" },
+        { "name": "Cypress", "level": 92, "icon": "Code2", "experience": "3 yrs" },
+        { "name": "Selenium WebDriver & Grid", "level": 90, "icon": "Globe", "experience": "3 yrs" },
+        { "name": "Robot Framework", "level": 85, "icon": "Bot", "experience": "2 yrs" },
+        { "name": "Appium Mobile", "level": 82, "icon": "Smartphone", "experience": "2 yrs" }
+      ]
+    },
+    {
+      "category": "API & Performance",
+      "items": [
+        { "name": "Postman & Newman CLI", "level": 94, "icon": "Send", "experience": "3 yrs" },
+        { "name": "REST Assured", "level": 90, "icon": "Server", "experience": "2.5 yrs" },
+        { "name": "Apache JMeter", "level": 88, "icon": "Activity", "experience": "2 yrs" },
+        { "name": "Swagger / OpenAPI", "level": 90, "icon": "CheckCircle2", "experience": "3 yrs" },
+        { "name": "Karate DSL", "level": 86, "icon": "ShieldAlert", "experience": "2 yrs" }
+      ]
+    },
+    {
+      "category": "DevOps & Cloud",
+      "items": [
+        { "name": "GitHub Actions", "level": 92, "icon": "GitFork", "experience": "3 yrs" },
+        { "name": "Docker & Compose", "level": 88, "icon": "Box", "experience": "2 yrs" },
+        { "name": "Jenkins Pipelines", "level": 85, "icon": "Sliders", "experience": "2 yrs" },
+        { "name": "Git & GitLab", "level": 94, "icon": "GitPullRequest", "experience": "3 yrs" },
+        { "name": "AWS Cloud", "level": 78, "icon": "Cloud", "experience": "1.5 yrs" }
+      ]
+    },
+    {
+      "category": "Programming Languages",
+      "items": [
+        { "name": "Python", "level": 95, "icon": "Binary", "experience": "3 yrs" },
+        { "name": "Java", "level": 88, "icon": "Coffee", "experience": "2.5 yrs" },
+        { "name": "JavaScript / TypeScript", "level": 88, "icon": "Braces", "experience": "3 yrs" },
+        { "name": "SQL", "level": 84, "icon": "Database", "experience": "2.5 yrs" }
+      ]
+    }
+  ],
+  "experiences": [
+    {
+      "id": "exp-1",
+      "role": "Jr SQA & Project Coordinator",
+      "company": "SoftStandard Solutions",
+      "location": "Dhaka, Bangladesh",
+      "period": "Sep 2025 – Present",
+      "type": "Full-Time (Remote)",
+      "highlights": [
+        "Leading QA automation workflows, cutting manual regression time by 60%.",
+        "Built automated GitHub Actions quality gates blocking merges on test failure.",
+        "Coordinated release planning, defect triage, and automated HTML reporting."
+      ],
+      "techStack": ["Playwright", "Python", "Postman", "GitHub Actions", "JIRA", "Docker"]
+    },
+    {
+      "id": "exp-2",
+      "role": "QA & Test Automation Engineer",
+      "company": "After20solutions",
+      "location": "Toronto, Canada",
+      "period": "Sep 2024 – Jul 2025",
+      "type": "Full-Time (Remote)",
+      "highlights": [
+        "Architected end-to-end Cypress & Selenium Grid test automation suites.",
+        "Integrated automated API regression runs with REST Assured into Jenkins pipelines.",
+        "Created cross-browser test matrices across Chrome, Firefox, Safari, and Edge."
+      ],
+      "techStack": ["Cypress", "Selenium Grid", "REST Assured", "Jenkins", "AWS", "JIRA"]
+    },
+    {
+      "id": "exp-3",
+      "role": "SQA Engineer",
+      "company": "Hishabee",
+      "location": "Dhaka, Bangladesh",
+      "period": "Nov 2023 – Apr 2024",
+      "type": "Contract (Remote)",
+      "highlights": [
+        "Tested retail ERP and POS mobile applications across Android and iOS devices.",
+        "Discovered and logged 120+ high-severity defects with reproducible steps.",
+        "Collaborated daily with engineering squads in two-week Agile sprints."
+      ],
+      "techStack": ["Manual Testing", "Robot Framework", "Postman", "Android ADB", "JIRA"]
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "Web Automation with Docker & Jenkins Pipeline",
+      "category": "DevTestOps",
+      "featured": true,
+      "description": "Selenium web automation suite integrated with headless Docker containers and automated Jenkins CI/CD pipeline.",
+      "metrics": "65% faster builds | 100% automated triggers",
+      "tags": ["Selenium", "Docker", "Jenkins", "Java", "CI/CD"],
+      "github": "https://github.com/kazikhalid757/Web-Automation-with-Docker-Jenkins-Pipeline",
+      "liveDemo": "",
+      "image": "/images/1.png"
+    },
+    {
+      "id": "proj-2",
+      "title": "Playwright Web Automation with JavaScript",
+      "category": "Test Automation",
+      "featured": true,
+      "description": "Modern Playwright automation suite featuring auto-waiting, network mocking, and parallel cross-browser execution.",
+      "metrics": "3.2s average suite execution | 0% flaky tests",
+      "tags": ["Playwright", "JavaScript", "E2E Testing", "Parallel Execution"],
+      "github": "https://github.com/kazikhalid757/Palywrite-web-automation-with-js",
+      "liveDemo": "",
+      "image": "/images/3.png"
+    },
+    {
+      "id": "proj-3",
+      "title": "Web Automation using Cypress with GitHub Actions",
+      "category": "Test Automation",
+      "featured": true,
+      "description": "Cypress automation testing framework running headlessly in GitHub Actions with automatic video artifact generation.",
+      "metrics": "Zero-defect merge gate | Automated PR checks",
+      "tags": ["Cypress", "GitHub Actions", "CI/CD", "JavaScript"],
+      "github": "https://github.com/kazikhalid757/Web-Automation-using-Cypress-with-GitActions",
+      "liveDemo": "",
+      "image": "/images/2.png"
+    },
+    {
+      "id": "proj-4",
+      "title": "API Testing with REST Assured & GitHub Actions",
+      "category": "API Testing",
+      "featured": true,
+      "description": "Backend API test suite asserting JSON schemas, authentication tokens, status codes, and latency SLA limits in CI.",
+      "metrics": "140+ endpoints verified | Sub-second runs",
+      "tags": ["REST Assured", "Java", "GitHub Actions", "API Testing"],
+      "github": "https://github.com/kazikhalid757/API-testing-restassured-github-actions",
+      "liveDemo": "",
+      "image": "/images/4.jpg"
+    },
+    {
+      "id": "proj-5",
+      "title": "Distributed Web Automation with Selenium Grid",
+      "category": "Test Automation",
+      "featured": false,
+      "description": "Distributed test infrastructure scaling Selenium Hub and Node containers to run concurrent multi-browser tests.",
+      "metrics": "4x parallel throughput | Cross-browser parity",
+      "tags": ["Selenium Grid", "Docker", "Java", "TestNG"],
+      "github": "https://github.com/kazikhalid757/Web-Automation-With-Selenium-Grid",
+      "liveDemo": "",
+      "image": "/images/5.jpg"
+    },
+    {
+      "id": "proj-6",
+      "title": "Android App Automation with Robot Framework",
+      "category": "Test Automation",
+      "featured": false,
+      "description": "Keyword-driven mobile application automation framework using Robot Framework and Appium for Android.",
+      "metrics": "85+ critical mobile scenarios covered",
+      "tags": ["Robot Framework", "Appium", "Android", "Python"],
+      "github": "https://github.com/kazikhalid757/Android-App-Automation-Robot-Framework-",
+      "liveDemo": "",
+      "image": "/images/6.png"
+    },
+    {
+      "id": "proj-7",
+      "title": "Karate DSL BDD API Testing Suite",
+      "category": "API Testing",
+      "featured": false,
+      "description": "BDD-style API automation framework leveraging Karate DSL for unified HTTP and JSON validation.",
+      "metrics": "Human-readable Gherkin specs | Complete CRUD",
+      "tags": ["Karate DSL", "Cucumber BDD", "API Testing", "Java"],
+      "github": "https://github.com/kazikhalid757/Karate-DSL-API-Testing",
+      "liveDemo": "",
+      "image": "/images/1.png"
+    },
+    {
+      "id": "proj-8",
+      "title": "Load & Stress Testing using Apache JMeter",
+      "category": "Performance",
+      "featured": false,
+      "description": "Performance profiling suite using Apache JMeter simulating concurrent users to measure latency and throughput.",
+      "metrics": "Tested up to 5,000 concurrent threads",
+      "tags": ["Apache JMeter", "Performance Testing", "Stress Testing"],
+      "github": "https://github.com/kazikhalid757/Load-testing-using-Apache-JMeter",
+      "liveDemo": "",
+      "image": "/images/3.png"
+    },
+    {
+      "id": "proj-9",
+      "title": "AWS Web Server CI/CD Pipeline",
+      "category": "DevTestOps",
+      "featured": false,
+      "description": "Deployment pipeline deploying containerized web applications onto AWS cloud infrastructure with health checks.",
+      "metrics": "Automated rollback on failed health check",
+      "tags": ["AWS", "Docker", "Jenkins", "CI/CD", "DevOps"],
+      "github": "https://github.com/kazikhalid757/AWS-Web-Server-CI-CD-Pipeline",
+      "liveDemo": "",
+      "image": "/images/4.jpg"
+    },
+    {
+      "id": "proj-10",
+      "title": "Automated Web Server Containerization with Docker",
+      "category": "DevTestOps",
+      "featured": false,
+      "description": "Multi-stage Docker builds configured for minimal attack surfaces and reliable test environments.",
+      "metrics": "70% smaller image footprints",
+      "tags": ["Docker", "Linux", "DevOps", "Infrastructure"],
+      "github": "https://github.com/kazikhalid757/AWS-Web-Server-CI-CD-Pipeline",
+      "liveDemo": "",
+      "image": "/images/2.png"
+    }
+  ],
+  "awards": [
+    {
+      "id": "award-1",
+      "title": "Snake Achievement Award",
+      "issuer": "Google Bug Hunters",
+      "date": "2025",
+      "badgeIcon": "https://bughunters.google.com/static/assets/images/illustrations/awards/snake.svg",
+      "description": "Awarded by Google Security for submitting a verified security vulnerability report.",
+      "verifyUrl": "https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759"
+    },
+    {
+      "id": "award-2",
+      "title": "First Report Submitted Award",
+      "issuer": "Google Bug Hunters",
+      "date": "August 2025",
+      "badgeIcon": "https://bughunters.google.com/static/assets/images/illustrations/awards/first_report.svg",
+      "description": "Successfully submitted verified bug report to Google's vulnerability rewards program (VRP).",
+      "verifyUrl": "https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759"
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "title": "IBM Data Science Professional Certificate",
+      "issuer": "IBM via Coursera",
+      "image": "/images/ibm.jpg",
+      "verifyUrl": "https://www.coursera.org/account/accomplishments/specialization/certificate/6BTALFEMBEH3"
+    },
+    {
+      "id": "cert-2",
+      "title": "Google Data Analytics Professional Certificate",
+      "issuer": "Google via Coursera",
+      "image": "/images/google.jpg",
+      "verifyUrl": "https://www.coursera.org/account/accomplishments/specialization/certificate/258DL78Q938L"
+    },
+    {
+      "id": "cert-3",
+      "title": "Data Visualization with Tableau",
+      "issuer": "UC Davis via Coursera",
+      "image": "/images/tebleau.jpg",
+      "verifyUrl": "https://www.coursera.org/account/accomplishments/specialization/certificate/EUREW966Q7UF"
+    }
+  ],
+  "interactiveTestSuites": [
+    {
+      "id": "suite-1",
+      "name": "Playwright E2E Regression",
+      "type": "E2E Web Suite",
+      "framework": "Playwright v1.40",
+      "totalTests": 24,
+      "logs": [
+        "Running 24 tests using 4 parallel workers (headless: true)",
+        "✓ [chromium] › auth.spec.ts:12:5 › valid login redirect (410ms)",
+        "✓ [chromium] › checkout.spec.ts:34:5 › cart discount calculation (620ms)",
+        "✓ [firefox] › navigation.spec.ts:8:5 › mobile responsive drawer (340ms)",
+        "✓ [webkit] › api-mock.spec.ts:19:5 › graceful network failure fallback (290ms)",
+        "✓ [chromium] › payments.spec.ts:42:5 › stripe webhook verification (580ms)",
+        "Summary: 24 passed, 0 failed, 0 flaky in 2.24s."
+      ],
+      "executionTime": "2.24s",
+      "passRate": "100%"
+    },
+    {
+      "id": "suite-2",
+      "name": "REST Assured Microservices Health",
+      "type": "API Contract Suite",
+      "framework": "REST Assured & TestNG",
+      "totalTests": 38,
+      "logs": [
+        "Initializing HTTP Client with connection pooling",
+        "✓ GET /api/v1/health -> 200 OK [latency: 42ms]",
+        "✓ POST /api/v1/auth/token -> 201 Created (JWT schema valid) [latency: 89ms]",
+        "✓ GET /api/v1/users/profile -> 200 OK (Data encryption asserted) [latency: 61ms]",
+        "✓ PUT /api/v1/orders/submit -> 200 OK (Idempotency verified) [latency: 94ms]",
+        "Summary: 38 endpoints asserted with strict JSON Schema compliance."
+      ],
+      "executionTime": "0.85s",
+      "passRate": "100%"
+    },
+    {
+      "id": "suite-3",
+      "name": "Dockerized Selenium Grid",
+      "type": "Distributed Grid",
+      "framework": "Selenium Grid 4 & Docker",
+      "totalTests": 48,
+      "logs": [
+        "Connecting to remote grid hub: http://selenium-hub:4444",
+        "✓ Grid Node-1 (Chrome/Ubuntu): session #8f23 passed (1.2s)",
+        "✓ Grid Node-2 (Firefox/Ubuntu): session #9a44 passed (1.4s)",
+        "✓ Grid Node-3 (Edge/Ubuntu): session #3b12 passed (1.1s)",
+        "Summary: 48 parallel sessions completed without timeouts."
+      ],
+      "executionTime": "3.80s",
+      "passRate": "100%"
+    },
+    {
+      "id": "suite-4",
+      "name": "Apache JMeter Peak Load Benchmark",
+      "type": "Performance Stress",
+      "framework": "Apache JMeter 5.6",
+      "totalTests": 500,
+      "logs": [
+        "Spawning 500 virtual users across 10 thread groups",
+        "Target throughput: 1,200 req/sec reached",
+        "p95 response time: 148ms (SLA threshold < 300ms) PASS",
+        "Error rate: 0.00% under peak concurrency",
+        "Summary: System meets enterprise throughput and reliability requirements."
+      ],
+      "executionTime": "4.10s",
+      "passRate": "100%"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-1792235930928",
+      "name": "QA Lead Recruiter",
+      "email": "lead@example.com",
+      "subject": "Interview Request",
+      "message": "Great portfolio!",
+      "date": "2026-10-17T11:18:50.928Z",
+      "read": false
+    }
+  ],
+  "adminSettings": {
+    "adminPin": "admin123",
+    "lastBackup": "2026-10-17T19:00:00.000Z"
+  }
+}
