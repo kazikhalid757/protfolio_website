@@ -58,14 +58,14 @@ export default function SkillsSection({ skills }: SkillsProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight pb-4">
             <div>
               <span className="font-mono text-xs font-bold text-emeraldSolid uppercase tracking-wider">
-                TECHNICAL ARSENAL &amp; TOOLCHAIN
+                TECHNICAL ARSENAL
               </span>
               <h2 className="font-display font-extrabold text-2xl text-ink mt-0.5">
-                Skills &amp; Automation Proficiencies
+                Core Technical Stack
               </h2>
             </div>
             <span className="font-mono text-xs text-inkMuted">
-              Verified Production Toolsets &amp; Methodologies
+              Production Tools &amp; Frameworks
             </span>
           </div>
 
@@ -96,11 +96,11 @@ export default function SkillsSection({ skills }: SkillsProps) {
               >
                 <div className="flex items-center justify-between border-b border-borderLight pb-2.5">
                   <h3 className="font-display font-bold text-sm text-ink flex items-center gap-2">
-                    <span className="font-mono text-[11px] text-emeraldSolid font-bold">0{groupIdx + 1} //</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emeraldSolid"></span>
                     <span>{group.category}</span>
                   </h3>
                   <span className="font-mono text-[10px] font-semibold text-inkSubtle">
-                    {group.items?.length || 0} PROVEN TOOLS
+                    {group.items?.length || 0} TOOLS
                   </span>
                 </div>
 

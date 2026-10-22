@@ -34,7 +34,7 @@ export default function Footer({ profile }: FooterProps) {
         </div>
 
         <div className="flex items-center gap-4 font-mono text-[11px]">
-          <span className="hidden md:inline">PURE SOLID LIGHT MODE // ZERO-DEFECT ENGINEERING</span>
+          <span className="hidden md:inline text-inkMuted">Systems Active • Remote Worldwide</span>
           <Link 
             href="/admin" 
             className="text-inkSubtle hover:text-ink flex items-center gap-1"

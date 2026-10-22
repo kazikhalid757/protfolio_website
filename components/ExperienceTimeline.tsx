@@ -28,20 +28,19 @@ export default function ExperienceTimeline({ experiences }: ExperienceProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight pb-4">
             <div>
               <span className="font-mono text-xs font-bold text-emeraldSolid uppercase tracking-wider">
-                07 // PROFESSIONAL TRACK RECORD
+                PROFESSIONAL EXPERIENCE
               </span>
               <h2 className="font-display font-extrabold text-2xl text-ink mt-0.5">
-                Career History &amp; Release Engineering Log
+                Work Experience
               </h2>
             </div>
             <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded bg-nested border border-borderLight text-ink self-start sm:self-auto">
-              3+ YEARS SDET EXPERIENCE
+              3+ YEARS SDET
             </span>
           </div>
 
           <div className="space-y-4">
             {expList.map((exp, idx) => {
-              const roleCode = `ENG-0${idx + 1}`;
               return (
                 <div
                   key={exp.id || idx}
@@ -49,14 +48,9 @@ export default function ExperienceTimeline({ experiences }: ExperienceProps) {
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-nested border border-borderLight text-ink">
-                          {roleCode}
-                        </span>
-                        <h3 className="font-display font-bold text-base text-ink">
-                          {exp.role}
-                        </h3>
-                      </div>
+                      <h3 className="font-display font-bold text-base text-ink mb-0.5">
+                        {exp.role}
+                      </h3>
                       <div className="font-display font-semibold text-sm text-emeraldSolid">
                         {exp.company}
                       </div>

@@ -76,14 +76,14 @@ export default function ProjectsSection({ projects }: ProjectsProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight pb-4">
             <div>
               <span className="font-mono text-xs font-bold text-emeraldSolid uppercase tracking-wider">
-                05 // PRODUCTION SYSTEMS &amp; DELIVERIES
+                PRODUCTION SYSTEMS
               </span>
               <h2 className="font-display font-bold text-xl text-ink mt-1">
-                Featured Test Architecture Case Studies
+                Flagship Case Studies
               </h2>
             </div>
             <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded bg-nested border border-borderLight text-ink self-start sm:self-auto">
-              3 PRODUCTION CASE STUDIES
+              3 CASE STUDIES
             </span>
           </div>
 

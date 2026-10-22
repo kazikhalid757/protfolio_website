@@ -1,75 +1,60 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
+import { Briefcase, Calendar, MapPin, CheckCircle2, ShieldCheck, Activity } from 'lucide-react';
 
 interface HeroProps {
   profile: any;
+  experiences?: any[];
 }
 
-export default function Hero({ profile }: HeroProps) {
+export default function Hero({ profile, experiences }: HeroProps) {
   const p = profile || {};
   const metrics = p.metrics || {};
   const socials = p.socials || {};
 
-  const toolSpecs: Record<string, string> = {
-    'PLAYWRIGHT': 'E2E Web & API Multi-Browser Engine • Parallel Sharding (12x workers)',
-    'CYPRESS': 'Component & SPA Regression Harness • Custom Network Stubbing',
-    'SELENIUM GRID 4': 'Distributed Cross-Browser Kubernetes Pod Matrix',
-    'REST ASSURED': 'Contract, Schema & Stateful Microservice API Verification',
-    'APACHE JMETER': 'High-Concurrency Load, Stress & Spike Throughput Testing',
-    'DOCKER': 'Hermetic Ephemeral Test Containers & Isolated CI Environments',
-    'GITHUB ACTIONS': 'Automated PR Quality Gates, Matrix Workflows & Release Blockers',
-    'OWASP ZAP': 'Automated DAST Security Scanning & API Vulnerability Auditing',
-    'ALLURE REPORTS': 'Executive Telemetry, Trace Attachments & Flakiness Analytics'
-  };
+  // Dynamically detect current active role
+  const currentExp = experiences?.find((e: any) => 
+    e.period?.toLowerCase().includes('present')
+  ) || experiences?.[0];
 
-  const toolList = [
-    'PLAYWRIGHT',
-    'CYPRESS',
-    'SELENIUM GRID 4',
-    'REST ASSURED',
-    'APACHE JMETER',
-    'DOCKER',
-    'GITHUB ACTIONS',
-    'OWASP ZAP',
-    'ALLURE REPORTS'
+  const frameworks = [
+    'Playwright',
+    'Cypress',
+    'Selenium Grid',
+    'REST Assured',
+    'Docker',
+    'GitHub Actions'
   ];
-
-  const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [readoutText, setReadoutText] = useState('READY // 9 Core Frameworks Integrated in CI/CD');
-
-  const handleToolClick = (tool: string) => {
-    setActiveTool(tool);
-    setReadoutText(`${tool} // ${toolSpecs[tool] || 'Verified Production Test Toolchain'}`);
-  };
 
   return (
     <section id="about" className="scroll-mt-24 pt-8 pb-12">
       {/* Anchor alias for #overview */}
       <span id="overview" className="sr-only">Overview</span>
 
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* ===================================================================
-             HERO 12-COLUMN ASYMMETRIC ARCHITECTURAL GRID
+             HERO 12-COLUMN ARCHITECTURAL GRID (Equally balanced columns)
              =================================================================== */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* LEFT COLUMN (7 Cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-between py-1">
+          {/* LEFT COLUMN (7 Cols) - Headline, Intro, Actions & Telemetry Metrics */}
+          <div className="lg:col-span-7 flex flex-col justify-between py-1 space-y-6">
+            
+            {/* Top Block: Status, Headline, Bio, Buttons */}
             <div className="space-y-6">
-              
               {/* Top Status Pill */}
-              <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface border border-borderLight">
-                <span className="w-2 h-2 rounded-full bg-[#10B981] shrink-0"></span>
+              <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface border border-borderLight shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
                 <span className="font-mono text-[11px] font-semibold tracking-wider text-ink uppercase">
-                  SYSTEMS OPERATIONAL // CI/CD QUALITY GATES ACTIVE
+                  Systems Operational // Available for SDET Roles
                 </span>
               </div>
 
               {/* Display Headline */}
-              <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-[54px] text-ink tracking-tight leading-[1.08]">
+              <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-[52px] text-ink tracking-tight leading-[1.08]">
                 Engineering{' '}
                 <span className="text-emeraldSolid border-b-4 border-emeraldSolid pb-0.5">
                   Zero-Defect Releases
@@ -78,19 +63,19 @@ export default function Hero({ profile }: HeroProps) {
               </h1>
 
               {/* Lead Paragraph */}
-              <p className="text-base sm:text-[17px] text-inkMuted leading-relaxed max-w-2xl font-normal">
-                I am <strong className="font-semibold text-ink">{p.name || 'Kazi Khalid Hasan Tamim'}</strong>. I architect high-speed automation frameworks, distributed CI/CD quality gates, and automated security verification to ensure web and API software never breaks in production.
+              <p className="text-base sm:text-lg text-inkMuted leading-relaxed max-w-2xl font-normal">
+                I'm <strong className="font-semibold text-ink">{p.name || 'Kazi Khalid Hasan Tamim'}</strong>, a QA &amp; Test Automation Engineer (SDET) with 3+ years of experience. I architect resilient test frameworks in <strong className="font-semibold text-ink">Playwright</strong>, <strong className="font-semibold text-ink">Cypress</strong>, and <strong className="font-semibold text-ink">REST Assured</strong>, paired with automated <strong className="font-semibold text-ink">CI/CD Quality Gates</strong> to guarantee zero-defect releases.
               </p>
 
-              {/* Action Bar (3 buttons aligned cleanly) */}
+              {/* Action Bar */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
-                {/* 1. Launch QA Command Studio */}
+                {/* 1. View Capabilities */}
                 <a 
-                  href="#qa-runner"
-                  className="inline-flex items-center gap-2.5 px-5 py-3 rounded-md bg-ink hover:bg-inkHover text-white font-mono text-xs sm:text-sm font-semibold micro-transition cursor-pointer"
+                  href="#capabilities"
+                  className="inline-flex items-center gap-2.5 px-5 py-3 rounded-md bg-ink hover:bg-inkHover text-white font-mono text-xs sm:text-sm font-semibold micro-transition cursor-pointer shadow-sm"
                 >
                   <span className="text-[#10B981] font-bold">&gt;_</span>
-                  <span>Launch QA Command Studio</span>
+                  <span>View Capabilities</span>
                 </a>
 
                 {/* 2. Hire on Upwork */}
@@ -98,10 +83,10 @@ export default function Hero({ profile }: HeroProps) {
                   href={socials.upwork || 'https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share'}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-emeraldSolid hover:bg-[#047857] text-white text-xs sm:text-sm font-semibold micro-transition"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-emeraldSolid hover:bg-[#047857] text-white text-xs sm:text-sm font-semibold micro-transition shadow-sm"
                 >
                   <span>Hire on Upwork</span>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path d="M7 17L17 7M17 7H8M17 7V16"/>
                   </svg>
                 </a>
@@ -115,7 +100,7 @@ export default function Hero({ profile }: HeroProps) {
                     className="inline-flex items-center gap-2 px-4 py-3 rounded-md bg-surface hover:bg-nested text-ink border border-borderHover text-xs sm:text-sm font-semibold micro-transition cursor-pointer"
                     title="Download Official CV"
                   >
-                    <svg className="w-4 h-4 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg className="w-4 h-4 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                       <polyline points="7 10 12 15 17 10"/>
                       <line x1="12" y1="15" x2="12" y2="3"/>
@@ -126,292 +111,199 @@ export default function Hero({ profile }: HeroProps) {
               </div>
             </div>
 
-            {/* SLA Telemetry Bar (Two structured solid mini-cards side-by-side) */}
-            <div className="pt-8 mt-8 border-t border-borderLight grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* Mini-Card 1: Flakiness Rate */}
-              <div className="bg-surface border border-borderLight rounded-md px-4 py-3 flex items-center justify-between micro-transition hover:border-borderHover">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-emeraldSurface border border-emeraldBorder flex items-center justify-center text-emeraldSolid shrink-0">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-medium text-inkMuted">Flakiness Rate:</span>
-                </div>
-                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-emeraldSurface border border-emeraldBorder text-emeraldText">
-                  &lt; 0.5% SLA
-                </span>
-              </div>
-
-              {/* Mini-Card 2: Direct Response */}
-              <div className="bg-surface border border-borderLight rounded-md px-4 py-3 flex items-center justify-between micro-transition hover:border-borderHover">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-blueSurface border border-blueBorder flex items-center justify-center text-blueSolid shrink-0">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                      <circle cx="12" cy="12" r="10"/>
-                      <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-medium text-inkMuted">Direct Response:</span>
-                </div>
-                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blueSurface border border-blueBorder text-blueText">
-                  &lt; 4 Hours
-                </span>
-              </div>
-            </div>
-
-          </div>
-
-          {/* RIGHT COLUMN (5 Cols) - Organized Profile & Architecture Dossier Card */}
-          <div className="lg:col-span-5">
-            <div className="bg-surface border border-borderLight rounded-lg overflow-hidden flex flex-col h-full justify-between">
-              
-              {/* Structural Header Bar */}
-              <div className="bg-nested border-b border-borderLight px-5 py-2.5 flex items-center justify-between">
+            {/* Smart Space Management: Verified QA Telemetry Metrics (Fills left column with high-signal proof) */}
+            <div className="pt-6 border-t border-borderLight space-y-4">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-ink"></span>
-                  <span className="font-mono text-[11px] font-semibold text-inkMuted tracking-wider uppercase">
-                    ARCHITECT DOSSIER // ID: KKH-SDET
+                  <Activity className="w-3.5 h-3.5 text-emeraldSolid" />
+                  <span className="font-mono text-[11px] font-bold text-inkSubtle uppercase tracking-wider">
+                    VERIFIED QA TELEMETRY
                   </span>
                 </div>
                 <span className="font-mono text-[11px] font-semibold text-emeraldSolid">
-                  v4.2 STABLE
+                  Production SLA Benchmarks
                 </span>
               </div>
 
-              {/* Main Card Body */}
-              <div className="p-5 sm:p-6 space-y-5 flex-1">
-                
-                {/* Profile Header */}
-                <div className="flex items-start gap-4">
-                  {/* Clean Professional Avatar with Solid Border & Online Indicator */}
-                  <div className="relative shrink-0">
-                    <div className="w-16 h-16 rounded-md bg-nested border border-borderHover overflow-hidden relative">
-                      <Image 
-                        src={p.avatar || '/images/me.jpg'} 
-                        alt={p.name || 'Kazi Khalid Hasan Tamim'}
-                        fill
-                        sizes="64px"
-                        style={{ objectFit: 'cover' }}
-                        priority
-                      />
-                    </div>
-                    {/* Solid Online Indicator */}
-                    <span 
-                      className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#10B981] border-2 border-surface" 
-                      title="Available for Remote Engineering"
-                    />
+              {/* 2x2 Metric Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Metric 01: Automated Test Runs */}
+                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-borderHover shadow-sm transition-all">
+                  <div className="font-mono text-[10px] font-bold text-inkSubtle uppercase tracking-wider">
+                    AUTOMATED TEST RUNS
                   </div>
-
-                  {/* Name, Role & Location */}
-                  <div className="min-w-0 flex-1">
-                    <h2 className="font-display font-bold text-lg text-ink tracking-tight truncate">
-                      {p.name || 'Kazi Khalid Hasan Tamim'}
-                    </h2>
-                    <p className="font-mono text-xs font-semibold text-emeraldSolid mt-0.5 truncate">
-                      &gt; {p.title || 'QA & Test Automation Engineer | SDET'}
-                    </p>
-                    <p className="text-xs text-inkSubtle mt-1 flex items-center gap-1.5 flex-wrap">
-                      <span>{p.location || 'Mirpur-2, Dhaka (UTC+6)'}</span>
-                      <span>•</span>
-                      <span className="font-medium text-inkMuted">Remote Worldwide</span>
-                    </p>
+                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-ink mt-1 tracking-tight">
+                    {metrics.automatedTestsExecuted || '18,500+'}
                   </div>
+                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
+                    Completed test executions
+                  </p>
                 </div>
 
-                {/* Credential Rows (2 structured solid rows with 1px borders) */}
-                <div className="space-y-2.5">
-                  {/* Row 1: Google Bug Hunters VRP */}
-                  {socials.bughunters && (
-                    <a
-                      href={socials.bughunters}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 rounded-md bg-surface border border-borderLight flex items-center justify-between gap-3 micro-transition hover:border-blueBorder block"
+                {/* Metric 02: Pipeline Pass Rate */}
+                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-emeraldBorder shadow-sm transition-all">
+                  <div className="font-mono text-[10px] font-bold text-emeraldSolid uppercase tracking-wider">
+                    PIPELINE PASS SLA
+                  </div>
+                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-emeraldSolid mt-1 tracking-tight">
+                    {metrics.pipelinePassRate || '99.8%'}
+                  </div>
+                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
+                    Flakiness-free execution rate
+                  </p>
+                </div>
+
+                {/* Metric 03: Regressions Blocked */}
+                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-amberBorder shadow-sm transition-all">
+                  <div className="font-mono text-[10px] font-bold text-amber-600 uppercase tracking-wider">
+                    REGRESSIONS BLOCKED
+                  </div>
+                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1 tracking-tight">
+                    {metrics.bugsCaughtPreProd || '480+'}
+                  </div>
+                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
+                    Pre-production defects caught
+                  </p>
+                </div>
+
+                {/* Metric 04: Defect Escape */}
+                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-blueBorder shadow-sm transition-all">
+                  <div className="font-mono text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                    DEFECT ESCAPE SLA
+                  </div>
+                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-blue-600 mt-1 tracking-tight">
+                    &lt; 0.2%
+                  </div>
+                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
+                    Strict production release gate
+                  </p>
+                </div>
+              </div>
+
+              {/* Core Frameworks Pill Row */}
+              <div className="p-3 rounded-xl bg-canvas border border-borderLight flex flex-wrap items-center justify-between gap-2">
+                <span className="font-mono text-[10px] font-bold text-inkSubtle uppercase">
+                  ACTIVE FRAMEWORKS:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {frameworks.map((tool) => (
+                    <span 
+                      key={tool} 
+                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-surface border border-borderLight text-ink font-semibold"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-md bg-blueSurface border border-blueBorder flex items-center justify-center text-blueSolid shrink-0">
-                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            <path d="M9 12l2 2 4-4"/>
-                          </svg>
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-xs font-bold text-ink truncate">Google Bug Hunters VRP</div>
-                          <div className="text-[11px] text-inkSubtle truncate">Independent Security Researcher</div>
-                        </div>
-                      </div>
-                      <span className="font-mono text-[10px] font-bold px-2.5 py-1 rounded bg-blueSurface border border-blueBorder text-[#1D4ED8] whitespace-nowrap shrink-0">
-                        VERIFIED PROFILE
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN (5 Cols) - Full Picture + Dynamic Current Company Work Info */}
+          <div className="lg:col-span-5 flex flex-col justify-between">
+            <div className="bg-surface border border-borderLight rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-5 h-full flex flex-col justify-between">
+              
+              {/* Full Portrait Photo (Exact 3:4 Aspect Ratio of original photo) */}
+              <div className="relative w-full aspect-[3/4] max-w-[420px] mx-auto rounded-xl overflow-hidden bg-nested border border-borderLight shadow-sm">
+                <Image 
+                  src={p.avatar || '/images/kazi-tamim.jpg'} 
+                  alt={p.name || 'Kazi Khalid Hasan Tamim'}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 420px"
+                  style={{ objectFit: 'cover' }}
+                  priority
+                  className="rounded-xl"
+                />
+                {/* Active Availability Badge on Image */}
+                <div className="absolute bottom-3 left-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-white/10 text-white shadow-lg">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="font-mono text-xs font-semibold tracking-wide">
+                    Available for Remote Roles
+                  </span>
+                </div>
+              </div>
+
+              {/* Name, Role & Location Header */}
+              <div className="space-y-1">
+                <h2 className="font-display font-extrabold text-2xl text-ink tracking-tight">
+                  {p.name || 'Kazi Khalid Hasan Tamim'}
+                </h2>
+                <p className="font-mono text-xs sm:text-sm font-semibold text-emeraldSolid">
+                  QA &amp; Test Automation Engineer | SDET
+                </p>
+              </div>
+
+              {/* Dynamic Current Company Work Information */}
+              {currentExp && (
+                <div className="p-4 rounded-xl bg-canvas border border-borderLight space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="font-mono text-[11px] font-bold text-emeraldSolid uppercase tracking-wider">
+                        CURRENT ROLE
                       </span>
-                    </a>
+                    </div>
+                    <span className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-surface border border-borderLight text-inkMuted">
+                      {currentExp.period || 'Present'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="font-display font-bold text-base text-ink">
+                      {currentExp.role}
+                    </h3>
+                    <div className="text-xs font-semibold text-inkMuted mt-0.5 flex items-center gap-1.5 flex-wrap">
+                      <span className="text-emeraldSolid font-bold">@ {currentExp.company}</span>
+                      <span>•</span>
+                      <span>{currentExp.type || 'Full-Time (Remote)'}</span>
+                      {currentExp.location && (
+                        <>
+                          <span>•</span>
+                          <span>{currentExp.location}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {currentExp.highlights && currentExp.highlights.length > 0 && (
+                    <ul className="space-y-1 pt-1.5 border-t border-borderLight">
+                      {currentExp.highlights.slice(0, 2).map((h: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-1.5 text-xs text-inkMuted leading-relaxed">
+                          <span className="text-emeraldSolid font-bold mt-0.5">✓</span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
                   )}
 
-                  {/* Row 2: Top-Rated Upwork SDET */}
-                  <a
-                    href={socials.upwork || 'https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-md bg-surface border border-borderLight flex items-center justify-between gap-3 micro-transition hover:border-emeraldBorder block"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-md bg-emeraldSurface border border-emeraldBorder flex items-center justify-center text-emeraldSolid shrink-0">
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                          <polyline points="22 4 12 14.01 9 11.01"/>
-                        </svg>
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-xs font-bold text-ink truncate">Top-Rated Upwork SDET</div>
-                        <div className="text-[11px] text-inkSubtle truncate">100% Job Success Rate</div>
-                      </div>
+                  {currentExp.techStack && currentExp.techStack.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-2 border-t border-borderLight">
+                      {currentExp.techStack.map((tech: string) => (
+                        <span key={tech} className="font-mono text-[10px] px-2 py-0.5 rounded bg-surface border border-borderLight text-ink font-semibold">
+                          {tech}
+                        </span>
+                      ))}
                     </div>
-                    <span className="font-mono text-[10px] font-bold px-2.5 py-1 rounded bg-emeraldSurface border border-emeraldBorder text-[#047857] whitespace-nowrap shrink-0">
-                      AVAILABLE
-                    </span>
-                  </a>
+                  )}
                 </div>
+              )}
 
-                {/* PROVEN AUTOMATION TOOLCHAIN (Clean 3x3 organized grid with active interaction) */}
-                <div className="space-y-2.5 pt-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-inkSubtle">
-                      PROVEN AUTOMATION TOOLCHAIN
-                    </span>
-                    <span className="font-mono text-[10px] text-emeraldSolid">
-                      Click tag to inspect spec
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {toolList.map((tool) => {
-                      const isSelected = activeTool === tool;
-                      return (
-                        <button
-                          key={tool}
-                          type="button"
-                          onClick={() => handleToolClick(tool)}
-                          className={`toolchain-tag py-2 px-2 rounded font-mono text-[11px] font-semibold text-center truncate cursor-pointer ${
-                            isSelected ? 'active-tag' : ''
-                          }`}
-                        >
-                          {tool}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {/* Dynamic Tool Readout Bar */}
-                  <div className="bg-canvas border border-borderLight rounded px-3 py-1.5 font-mono text-[11px] text-inkMuted flex items-center justify-between">
-                    <span className="truncate mr-2">{readoutText}</span>
-                    <span className="text-emeraldSolid font-bold shrink-0">OK</span>
-                  </div>
+              {/* Location & Availability Quick Row */}
+              <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
+                <div className="p-2.5 rounded-lg bg-surface border border-borderLight">
+                  <span className="text-[10px] uppercase text-inkSubtle block">Location</span>
+                  <span className="font-semibold text-ink truncate block">{p.location || 'Dhaka, Bangladesh'}</span>
                 </div>
-
-              </div>
-
-              {/* Card Footer Telemetry (2-column split with 1px solid #E2E8F0 divider, #F8FAFC solid background) */}
-              <div className="bg-canvas border-t border-borderLight grid grid-cols-2 divide-x divide-borderLight">
-                {/* Col 1: PIPELINE PASS RATE */}
-                <div className="p-4 space-y-2">
-                  <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-inkSubtle">
-                    PIPELINE PASS RATE
-                  </div>
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-mono text-xl font-extrabold text-emeraldSolid">
-                      {metrics.pipelinePassRate || '99.8%'}
-                    </span>
-                    <span className="font-mono text-[10px] font-semibold text-emeraldText">SLA VERIFIED</span>
-                  </div>
-                  {/* Solid Progress Bar */}
-                  <div className="w-full h-1.5 bg-borderLight rounded-none overflow-hidden">
-                    <div className="h-full bg-emeraldSolid w-[99.8%]"></div>
-                  </div>
-                </div>
-
-                {/* Col 2: PRE-PROD DEFECTS */}
-                <div className="p-4 space-y-2">
-                  <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-inkSubtle">
-                    PRE-PROD DEFECTS
-                  </div>
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-mono text-xl font-extrabold text-ink">
-                      {metrics.bugsCaughtPreProd || '480+'} Blocked
-                    </span>
-                  </div>
-                  {/* Solid Status Indicator */}
-                  <div className="flex items-center gap-1.5 pt-0.5">
-                    <span className="inline-block w-2 h-2 bg-emeraldSolid"></span>
-                    <span className="inline-block w-2 h-2 bg-emeraldSolid"></span>
-                    <span className="inline-block w-2 h-2 bg-emeraldSolid"></span>
-                    <span className="inline-block w-2 h-2 bg-emeraldSolid"></span>
-                    <span className="font-mono text-[10px] font-semibold text-inkMuted ml-1">ZERO P0 ESCAPES</span>
-                  </div>
+                <div className="p-2.5 rounded-lg bg-surface border border-borderLight">
+                  <span className="text-[10px] uppercase text-inkSubtle block">Availability</span>
+                  <span className="font-semibold text-emeraldSolid truncate block">Remote Worldwide</span>
                 </div>
               </div>
 
             </div>
           </div>
 
-        </div>
-
-        {/* ===================================================================
-             3. KEY METRICS BENTO BAR (4-Column Organized Architectural Grid)
-             =================================================================== */}
-        <div aria-label="Key QA Metrics" className="bg-surface border border-borderLight rounded-lg p-3 sm:p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            
-            {/* Metric 01: AUTOMATED SUITES */}
-            <div className="bg-surface border border-borderLight border-t-[3px] border-t-ink rounded-md p-5 micro-transition hover:border-borderHover">
-              <div className="font-mono text-[11px] font-bold text-inkSubtle tracking-wider uppercase">
-                01 // AUTOMATED SUITES
-              </div>
-              <div className="font-mono text-3xl sm:text-4xl font-extrabold text-ink mt-2 tracking-tight">
-                {metrics.automatedTestsExecuted || '18,500+'}
-              </div>
-              <p className="text-xs font-medium text-inkMuted mt-2">
-                Total test executions completed
-              </p>
-            </div>
-
-            {/* Metric 02: PIPELINE PASS SLA */}
-            <div className="bg-surface border border-borderLight border-t-[3px] border-t-emeraldSolid rounded-md p-5 micro-transition hover:border-borderHover">
-              <div className="font-mono text-[11px] font-bold text-inkSubtle tracking-wider uppercase">
-                02 // PIPELINE PASS SLA
-              </div>
-              <div className="font-mono text-3xl sm:text-4xl font-extrabold text-emeraldSolid mt-2 tracking-tight">
-                {metrics.pipelinePassRate || '99.8%'}
-              </div>
-              <p className="text-xs font-medium text-inkMuted mt-2">
-                Flakiness-free execution rate
-              </p>
-            </div>
-
-            {/* Metric 03: REGRESSIONS BLOCKED */}
-            <div className="bg-surface border border-borderLight border-t-[3px] border-t-amberSolid rounded-md p-5 micro-transition hover:border-borderHover">
-              <div className="font-mono text-[11px] font-bold text-inkSubtle tracking-wider uppercase">
-                03 // REGRESSIONS BLOCKED
-              </div>
-              <div className="font-mono text-3xl sm:text-4xl font-extrabold text-amberSolid mt-2 tracking-tight">
-                {metrics.bugsCaughtPreProd || '480+'}
-              </div>
-              <p className="text-xs font-medium text-inkMuted mt-2">
-                Defects caught pre-production
-              </p>
-            </div>
-
-            {/* Metric 04: DEFECT ESCAPE */}
-            <div className="bg-surface border border-borderLight border-t-[3px] border-t-blueSolid rounded-md p-5 micro-transition hover:border-borderHover">
-              <div className="font-mono text-[11px] font-bold text-inkSubtle tracking-wider uppercase">
-                04 // DEFECT ESCAPE
-              </div>
-              <div className="font-mono text-3xl sm:text-4xl font-extrabold text-blueSolid mt-2 tracking-tight">
-                &lt; 0.2%
-              </div>
-              <p className="text-xs font-medium text-inkMuted mt-2">
-                Strict production escape ratio
-              </p>
-            </div>
-
-          </div>
         </div>
 
       </div>

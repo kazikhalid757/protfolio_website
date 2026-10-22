@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-canvas text-ink flex flex-col">
       <Navbar profile={data.profile} />
-      <Hero profile={data.profile} />
+      <Hero profile={data.profile} experiences={data.experiences} />
       <InteractiveConsole testSuites={data.interactiveTestSuites} />
       <SkillsSection skills={data.skills} />
       <ProjectsSection projects={data.projects} />
