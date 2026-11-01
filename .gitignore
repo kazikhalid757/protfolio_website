@@ -8,6 +8,8 @@
 /.next/
 /out/
 .next
+.next-*
+
 
 # Production & Distribution
 /build
@@ -61,3 +63,7 @@ desktop.ini
 # Cache files
 .eslintcache
 .cache/
+
+# Contact-form inbox (private; never commit)
+data/messages.json
+data/*.tmp

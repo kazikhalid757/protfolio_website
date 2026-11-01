@@ -1,447 +1,144 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { 
-  FolderGit2, 
-  CheckCircle, 
-  Briefcase, 
-  MessageSquare, 
-  User, 
-  Layers, 
-  Award, 
-  Settings, 
-  ArrowRight, 
-  ExternalLink,
-  ShieldCheck,
-  Activity,
-  Check,
-  Database,
-  Cpu,
-  Clock,
-  Terminal
-} from 'lucide-react';
+import { ArrowUpRight, Check, CircleAlert } from 'lucide-react';
+import { useAdmin } from '@/components/admin/AdminContext';
+import { Badge, Card, PageHeader, Spinner } from '@/components/admin/ui';
+import { adminHref } from '@/lib/adminPath';
 
-export default function AdminDashboard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+interface Status {
+  database: { connected: boolean; latencyMs?: number };
+  email: { configured: boolean };
+  auth: { passwordSet: boolean; passwordStrong: boolean; devDefault: boolean };
+  siteUrlSet: boolean;
+}
+
+export default function Dashboard() {
+  const { data, loading, unread } = useAdmin();
+  const [status, setStatus] = useState<Status | null>(null);
 
   useEffect(() => {
-    fetch('/api/portfolio')
-      .then(res => res.json())
-      .then(d => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    fetch('/api/admin/status')
+      .then((r) => r.json())
+      .then(setStatus)
+      .catch(() => {});
   }, []);
 
-  if (loading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
-        Loading QA Admin Workspace...
-      </div>
-    );
-  }
+  const checks = useMemo(() => {
+    if (!data) return [];
+    const p = data.profile;
+    const products = data.products || [];
+    const list: { ok: boolean; label: string; fix: string; href: string }[] = [
+      { ok: !!p.avatar, label: 'Profile photo set', fix: 'Add a photo path or URL', href: adminHref('/profile') },
+      { ok: !!p.resumeUrl, label: 'CV link set', fix: 'Add a CV link so the Download CV button shows', href: adminHref('/profile') },
+      { ok: (p.bio || '').length >= 80, label: 'Bio is a few sentences long', fix: 'Write a bio of at least two sentences', href: adminHref('/profile') },
+      { ok: !!(p.socials?.linkedin && p.socials?.github), label: 'LinkedIn and GitHub linked', fix: 'Add both links', href: adminHref('/profile') },
+      {
+        ok: (data.experiences || []).some((e) => /present/i.test(e.period || '')),
+        label: 'A current job is marked “Present”',
+        fix: 'Mark your current job so the hero can mention it',
+        href: adminHref('/experience'),
+      },
+      {
+        ok: products.length > 0 && products.every((x) => x.problem && x.built),
+        label: 'Every product has a problem and a result',
+        fix: 'Fill “The problem” and “What you built” for each product',
+        href: adminHref('/products'),
+      },
+      {
+        ok: (data.projects || []).every((x) => x.github || x.liveDemo),
+        label: 'Every project links somewhere',
+        fix: 'Add a GitHub link to projects that have none',
+        href: adminHref('/projects'),
+      },
+    ];
+    if (status) {
+      list.push(
+        { ok: status.database.connected, label: 'Database connected', fix: 'Check DATABASE_URL (Settings explains how)', href: adminHref('/settings') },
+        { ok: !!p.siteUrl || status.siteUrlSet, label: 'Website address known (SEO)', fix: 'Set the Website address in Profile', href: adminHref('/profile') },
+        { ok: status.auth.passwordSet, label: 'Admin password set in the environment', fix: 'Set ADMIN_PASSWORD (Settings explains how)', href: adminHref('/settings') },
+        { ok: status.auth.passwordStrong, label: 'Admin password is strong (12+ characters)', fix: 'Use a longer password', href: adminHref('/settings') },
+        { ok: status.email.configured, label: 'Email alerts for new messages (optional)', fix: 'Add RESEND_API_KEY to get an email for each message', href: adminHref('/settings') }
+      );
+    }
+    return list;
+  }, [data, status]);
 
-  const profile = data?.profile || {};
-  const totalProjects = data?.projects?.length || 0;
-  const totalSkills = data?.skills?.reduce((acc: number, s: any) => acc + (s.items?.length || 0), 0) || 0;
-  const totalExperiences = data?.experiences?.length || 0;
-  const totalMessages = data?.messages?.length || 0;
-  const unreadMessages = data?.messages?.filter((m: any) => !m.read)?.length || 0;
-  const totalAwards = (data?.awards?.length || 0) + (data?.certifications?.length || 0);
+  if (loading && !data) return <Spinner />;
+  if (!data) return null;
+
+  const skillCount = (data.skills || []).reduce((n: number, g) => n + (g.items?.length || 0), 0);
+  const stats = [
+    { label: 'Jobs', value: (data.experiences || []).length, href: adminHref('/experience') },
+    { label: 'Products', value: (data.products || []).length, href: adminHref('/products') },
+    { label: 'Services', value: (data.services || []).length, href: adminHref('/services') },
+    { label: 'Skills', value: skillCount, href: adminHref('/skills') },
+    { label: 'Projects', value: (data.projects || []).length, href: adminHref('/projects') },
+    { label: 'Awards & certs', value: (data.awards || []).length + (data.certifications || []).length, href: adminHref('/awards') },
+  ];
+  const done = checks.filter((c) => c.ok).length;
+  const todo = checks.filter((c) => !c.ok);
 
   return (
-    <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
-      {/* Top Welcome & System Status Banner */}
-      <div 
-        className="spec-card"
-        style={{
-          padding: '2rem 2.25rem',
-          backgroundColor: '#ffffff',
-          marginBottom: '2rem',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1.5rem'
-        }}
-      >
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem' }}>
-            <span className="tech-stamp tech-stamp-emerald">
-              <span className="pulse-dot" style={{ width: '6px', height: '6px' }} />
-              OPERATIONAL
-            </span>
-            <span className="tech-stamp tech-stamp-slate">
-              PORTFOLIO CMS CONTROL
-            </span>
-          </div>
+    <>
+      <PageHeader
+        title={`Hello, ${(data.profile?.shortName || 'there').split(' ')[0]}.`}
+        description="Everything on your public website is edited here. Pick a section on the left, change it, and save."
+      />
 
-          <h1 style={{ fontSize: '1.9rem', fontWeight: 800, marginBottom: '0.4rem', color: '#0f172a', letterSpacing: '-0.025em' }}>
-            Welcome back, {profile.name || 'Kazi Tamim'}!
-          </h1>
-          <p style={{ fontSize: '0.92rem', color: '#64748b', maxWidth: '640px', lineHeight: 1.6 }}>
-            Manage and update every portfolio section in real-time. Changes are stored persistently to disk in <code style={{ color: '#0f172a', fontWeight: 600 }}>data/portfolio.json</code>.
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', gap: '0.65rem' }}>
-          <Link href="/admin/profile" className="btn btn-primary">
-            <User size={15} />
-            <span>Edit Profile</span>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-px bg-rule border border-rule">
+        {stats.map((s) => (
+          <Link key={s.label} href={s.href} className="group bg-white p-5 hover:bg-paperDeep transition-colors">
+            <p className="font-serif text-5xl leading-none text-char">{s.value}</p>
+            <p className="mt-3 flex items-center justify-between font-mono text-xs uppercase tracking-[0.12em] text-mute">
+              {s.label}
+              <ArrowUpRight size={14} className="group-hover:text-signal" aria-hidden />
+            </p>
           </Link>
-          <Link href="/" target="_blank" className="btn btn-outline">
-            <ExternalLink size={15} />
-            <span>Live Site</span>
-          </Link>
-        </div>
+        ))}
       </div>
 
-      {/* Primary KPI Tiles */}
-      <div 
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-          gap: '1.25rem',
-          marginBottom: '2.5rem'
-        }}
-      >
-        {/* Projects KPI */}
-        <div className="spec-card" style={{ padding: '1.5rem', backgroundColor: '#ffffff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-              AUTOMATION SYSTEMS
-            </span>
-            <FolderGit2 size={18} color="#2563eb" />
-          </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0f172a' }}>{totalProjects}</div>
-          <Link 
-            href="/admin/projects" 
-            style={{ fontSize: '0.8rem', color: '#2563eb', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem' }}
-          >
-            <span>Manage Projects</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-
-        {/* Skills KPI */}
-        <div className="spec-card" style={{ padding: '1.5rem', backgroundColor: '#ffffff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-              VERIFIED TECH STACK
-            </span>
-            <CheckCircle size={18} color="#059669" />
-          </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#059669' }}>{totalSkills}</div>
-          <Link 
-            href="/admin/skills" 
-            style={{ fontSize: '0.8rem', color: '#059669', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem' }}
-          >
-            <span>Manage Skills</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-
-        {/* Experience KPI */}
-        <div className="spec-card" style={{ padding: '1.5rem', backgroundColor: '#ffffff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-              WORK EXPERIENCE
-            </span>
-            <Briefcase size={18} color="#d97706" />
-          </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0f172a' }}>{totalExperiences}</div>
-          <Link 
-            href="/admin/experience" 
-            style={{ fontSize: '0.8rem', color: '#d97706', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem' }}
-          >
-            <span>Manage Positions</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-
-        {/* Inquiries KPI */}
-        <div className="spec-card" style={{ padding: '1.5rem', backgroundColor: '#ffffff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-              CONTACT INBOX
-            </span>
-            <MessageSquare size={18} color="#dc2626" />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-            <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0f172a' }}>{totalMessages}</div>
-            {unreadMessages > 0 && (
-              <span className="tech-stamp tech-stamp-red" style={{ fontSize: '0.7rem' }}>
-                {unreadMessages} UNREAD
-              </span>
-            )}
-          </div>
-          <Link 
-            href="/admin/messages" 
-            style={{ fontSize: '0.8rem', color: '#dc2626', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem' }}
-          >
-            <span>Open Message Inbox</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-      </div>
-
-      {/* System Information & Architecture Status */}
-      <div 
-        className="spec-card"
-        style={{
-          padding: '1.5rem 1.75rem',
-          backgroundColor: '#f8fafc',
-          marginBottom: '2.5rem',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '1.25rem'
-        }}
-      >
-        <div>
-          <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-            STORAGE ENGINE
-          </div>
-          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
-            <Database size={14} color="#059669" />
-            <span>data/portfolio.json</span>
-          </div>
-        </div>
-
-        <div>
-          <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-            FRAMEWORK BUILD
-          </div>
-          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
-            <Cpu size={14} color="#2563eb" />
-            <span>Next.js 14 (App Router)</span>
-          </div>
-        </div>
-
-        <div>
-          <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-            STATIC PAGES GENERATED
-          </div>
-          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
-            <CheckCircle size={14} color="#059669" />
-            <span>18 / 18 Routes Ready</span>
-          </div>
-        </div>
-
-        <div>
-          <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: '#64748b', fontWeight: 700 }}>
-            VRP CREDENTIALS
-          </div>
-          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
-            <ShieldCheck size={14} color="#059669" />
-            <span>Google Bug Hunters Active</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Management Shortcuts */}
-      <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a' }}>
-          CMS Management Shortcuts
-        </h2>
-        <span style={{ fontSize: '0.8rem', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
-          Direct Section Editors
-        </span>
-      </div>
-
-      <div 
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '1.25rem'
-        }}
-      >
-        <Link 
-          href="/admin/profile" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
+      {unread > 0 && (
+        <Link
+          href={adminHref('/messages')}
+          className="mt-6 flex items-center justify-between gap-4 border border-signal bg-white px-5 py-4 hover:bg-paperDeep transition-colors"
         >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Profile & Hero Section
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Bio, headline, metrics, social links, resume URL
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
+          <span className="font-semibold text-char">
+            {unread} unread message{unread > 1 ? 's' : ''} in your inbox
+          </span>
+          <ArrowUpRight size={18} className="text-signal" aria-hidden />
         </Link>
+      )}
 
-        <Link 
-          href="/admin/projects" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Automation Systems ({totalProjects})
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Add new projects, descriptions, tags, and metrics
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-
-        <Link 
-          href="/admin/skills" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Technical Skills Matrix ({totalSkills})
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Proficiency levels, categories, experience years
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-
-        <Link 
-          href="/admin/experience" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Professional Experience ({totalExperiences})
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Companies, roles, bullet point achievements
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-
-        <Link 
-          href="/admin/services" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Engineering Services
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Service packages, deliverables, Upwork links
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-
-        <Link 
-          href="/admin/awards" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Awards & Credentials ({totalAwards})
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Google Bug Hunters VRP and certifications
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-
-        <Link 
-          href="/admin/messages" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Inquiry Messages ({totalMessages})
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              View and reply to client inquiries
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-
-        <Link 
-          href="/admin/settings" 
-          className="spec-card"
-          style={{
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            textDecoration: 'none',
-            backgroundColor: '#ffffff'
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-              Backup & System Settings
-            </div>
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              1-click JSON export, restore seed defaults, change PIN
-            </div>
-          </div>
-          <ArrowRight size={18} color="#059669" />
-        </Link>
-      </div>
-    </div>
+      <Card className="mt-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rule px-5 py-4">
+          <h2 className="font-serif text-3xl font-normal text-char">Site health</h2>
+          <Badge tone={todo.length ? 'neutral' : 'dark'}>
+            {done}/{checks.length} ready
+          </Badge>
+        </div>
+        {!status && <p className="px-5 py-4 text-sm text-mute">Checking server setup…</p>}
+        <ul>
+          {[...todo, ...checks.filter((c) => c.ok)].map((c) => (
+            <li key={c.label} className="border-b border-rule last:border-0">
+              <Link href={c.href} className="flex items-center gap-4 px-5 py-3.5 hover:bg-paper transition-colors">
+                <span
+                  className={`grid place-items-center w-6 h-6 shrink-0 ${c.ok ? 'bg-char text-paper' : 'bg-signal text-white'}`}
+                  aria-hidden
+                >
+                  {c.ok ? <Check size={14} /> : <CircleAlert size={14} />}
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className={`block text-sm font-medium ${c.ok ? 'text-mute' : 'text-char'}`}>{c.label}</span>
+                  {!c.ok && <span className="block text-xs text-mute mt-0.5">{c.fix}</span>}
+                </span>
+                {!c.ok && <ArrowUpRight size={16} className="shrink-0 text-mute" aria-hidden />}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    </>
   );
 }

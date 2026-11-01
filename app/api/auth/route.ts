@@ -1,55 +1,93 @@
+/**
+ * Sign in / sign out / session status.
+ *   POST   { password }  -> sets the session cookie        (rate limited, audited)
+ *   GET                  -> { authenticated, configured, devDefault }
+ *   DELETE               -> revokes this session and clears the cookie
+ */
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { getPortfolioData, savePortfolioData } from '@/lib/data';
+import {
+  SESSION_COOKIE,
+  configuredPassword,
+  passwordMatches,
+  sessionCookieOptions,
+  usingDevDefaultPassword,
+} from '@/lib/auth';
+import { audit } from '@/lib/audit';
+import { dbConfigured } from '@/lib/db';
+import { routeError } from '@/lib/errors';
+import { clientIp, isSameOrigin, jsonError, readJson, userAgent } from '@/lib/http';
+import { rateLimit } from '@/lib/rateLimit';
+import { getSession, revokeSession, startSession } from '@/lib/session';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return jsonError('Cross-site request blocked.', 403);
+  if (!configuredPassword()) {
+    return NextResponse.json(
+      { error: 'Admin login is not configured. Set the ADMIN_PASSWORD environment variable and redeploy.', code: 'not_configured' },
+      { status: 503 }
+    );
+  }
+  if (!dbConfigured()) return jsonError('The database is not configured. Set DATABASE_URL.', 503);
+
+  const ip = clientIp(request);
   try {
-    const { password, action, newPassword } = await request.json();
-    const data = getPortfolioData();
-    const currentPin = data?.adminSettings?.adminPin || 'admin123';
-
-    if (action === 'change-password') {
-      const cookieStore = cookies();
-      const session = cookieStore.get('admin_session');
-      if (!session || session.value !== 'true') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-
-      if (!newPassword || newPassword.length < 4) {
-        return NextResponse.json({ error: 'Password must be at least 4 characters' }, { status: 400 });
-      }
-
-      data.adminSettings.adminPin = newPassword;
-      savePortfolioData(data);
-      return NextResponse.json({ success: true, message: 'Admin password updated successfully' });
+    // Per-IP brake, plus a global one so a botnet cannot guess in parallel.
+    const [perIp, global] = await Promise.all([rateLimit(`login:${ip}`, 8, 15 * 60), rateLimit('login:all', 60, 60 * 60)]);
+    if (!perIp.ok || !global.ok) {
+      const retry = Math.max(perIp.retryAfter, global.retryAfter);
+      await audit('login_blocked', 'too many attempts', ip);
+      return jsonError(`Too many attempts. Try again in ${Math.ceil(retry / 60)} minute(s).`, 429, undefined, { 'Retry-After': String(retry) });
     }
 
-    if (password === currentPin) {
-      const response = NextResponse.json({ success: true, message: 'Authentication successful' });
-      response.cookies.set('admin_session', 'true', {
-        httpOnly: true,
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        sameSite: 'lax',
-      });
-      return response;
+    const body = (await readJson(request, 5_000)) as { password?: unknown } | undefined;
+    if (!(await passwordMatches(body?.password))) {
+      await audit('login_failed', undefined, ip);
+      await new Promise((resolve) => setTimeout(resolve, 400)); // slow down guessing
+      return jsonError('Incorrect password.', 401);
     }
 
-    return NextResponse.json({ error: 'Invalid admin credentials' }, { status: 401 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    const cookie = await startSession(ip, userAgent(request));
+    await audit('login_success', undefined, ip);
+    const response = NextResponse.json({ success: true });
+    response.cookies.set(SESSION_COOKIE, cookie, sessionCookieOptions());
+    return response;
+  } catch (error) {
+    return routeError(error);
   }
 }
 
-export async function GET() {
-  const cookieStore = cookies();
-  const session = cookieStore.get('admin_session');
-  const isAuthenticated = session?.value === 'true';
-  return NextResponse.json({ authenticated: isAuthenticated });
+export async function GET(request: Request) {
+  let authenticated = false;
+  let checked = false;
+  try {
+    authenticated = dbConfigured() && !!(await getSession(request));
+    checked = true;
+  } catch {}
+  const response = NextResponse.json({
+    authenticated,
+    configured: !!configuredPassword(),
+    devDefault: usingDevDefaultPassword(),
+    database: dbConfigured(),
+  });
+  // A leftover cookie for a session that no longer exists is useless; remove it (only when the database really answered).
+  if (checked && !authenticated && (request.headers.get('cookie') || '').includes(SESSION_COOKIE + '=')) {
+    response.cookies.set(SESSION_COOKIE, '', sessionCookieOptions(0));
+  }
+  return response;
 }
 
-export async function DELETE() {
-  const response = NextResponse.json({ success: true, message: 'Logged out successfully' });
-  response.cookies.delete('admin_session');
+export async function DELETE(request: Request) {
+  if (!isSameOrigin(request)) return jsonError('Cross-site request blocked.', 403);
+  try {
+    const session = await getSession(request);
+    if (session) {
+      await revokeSession(session.id);
+      await audit('logout', undefined, clientIp(request));
+    }
+  } catch {}
+  const response = NextResponse.json({ success: true });
+  response.cookies.set(SESSION_COOKIE, '', sessionCookieOptions(0));
   return response;
 }

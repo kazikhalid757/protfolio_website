@@ -1,285 +1,342 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Settings, 
-  Download, 
-  Upload, 
-  RotateCcw, 
-  KeyRound, 
-  Check, 
-  AlertCircle, 
-  ShieldCheck, 
-  Database,
-  Lock
-} from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Check, Download, LogOut, MonitorSmartphone, RotateCcw, Trash2, Upload, X } from 'lucide-react';
+import { useAdmin } from '@/components/admin/AdminContext';
+import { Badge, Button, Card, Notice, PageHeader } from '@/components/admin/ui';
+import { adminHref } from '@/lib/adminPath';
 
-export default function AdminSettings() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [pwMessage, setPwMessage] = useState<string | null>(null);
-  const [pwError, setPwError] = useState<string | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
+interface Status {
+  database: { connected: boolean; latencyMs?: number; counts?: Record<string, number>; error?: string };
+  onVercel: boolean;
+  email: { configured: boolean };
+  auth: { passwordSet: boolean; passwordStrong: boolean; secretSet: boolean; devDefault: boolean };
+  siteUrlSet: boolean;
+}
+interface SessionRow {
+  id: string;
+  createdAt: string;
+  lastSeenAt: string;
+  ip: string | null;
+  userAgent: string | null;
+  current: boolean;
+}
+interface AuditRow {
+  id: number;
+  at: string;
+  action: string;
+  detail: string | null;
+  ip: string | null;
+}
 
-  useEffect(() => {
-    fetch('/api/portfolio')
-      .then(res => res.json())
-      .then(d => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+const when = (iso: string) =>
+  new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+/** "Chrome on Windows" from a user-agent string, good enough for a device list. */
+function deviceName(ua: string | null): string {
+  if (!ua) return 'Unknown device';
+  const browser = /Edg\//.test(ua) ? 'Edge' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Browser';
+  const os = /Windows/.test(ua) ? 'Windows' : /Android/.test(ua) ? 'Android' : /iPhone|iPad/.test(ua) ? 'iOS' : /Mac OS/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : '';
+  return os ? `${browser} on ${os}` : browser;
+}
+
+const actionLabel: Record<string, string> = {
+  login_success: 'Signed in',
+  login_failed: 'Wrong password',
+  login_blocked: 'Sign-in blocked (too many tries)',
+  logout: 'Signed out',
+  content_saved: 'Saved content',
+  content_imported: 'Imported a backup',
+  content_reset: 'Reset to starter content',
+  session_revoked: 'Signed a device out',
+  sessions_revoked_all: 'Signed out everywhere',
+  message_deleted: 'Deleted a message',
+};
+
+function Row({ ok, label, hint }: { ok: boolean; label: string; hint?: string }) {
+  return (
+    <li className="flex items-start gap-3 border-b border-rule py-3 last:border-0">
+      <span className={`mt-0.5 grid place-items-center w-5 h-5 shrink-0 ${ok ? 'bg-char text-paper' : 'bg-white text-signal border border-signal'}`} aria-hidden>
+        {ok ? <Check size={12} /> : <X size={12} />}
+      </span>
+      <span className="text-sm">
+        <span className="font-medium text-char">{label}</span>
+        {hint && <span className="block text-mute mt-0.5">{hint}</span>}
+      </span>
+    </li>
+  );
+}
+
+function Code({ children }: { children: React.ReactNode }) {
+  return <code className="font-mono text-xs bg-paperDeep border border-rule px-1.5 py-0.5">{children}</code>;
+}
+
+export default function SettingsPage() {
+  const { data, replaceAll, resetAll, toast, confirm, hasDirty } = useAdmin();
+  const [status, setStatus] = useState<Status | null>(null);
+  const [sessions, setSessions] = useState<SessionRow[]>([]);
+  const [audit, setAudit] = useState<AuditRow[]>([]);
+  const [busy, setBusy] = useState<'import' | 'reset' | 'revoke' | 'analytics' | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const loadSecurity = useCallback(async () => {
+    const [s, a] = await Promise.all([
+      fetch('/api/admin/sessions', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({})),
+      fetch('/api/admin/audit', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({})),
+    ]);
+    setSessions(s.sessions || []);
+    setAudit(a.entries || []);
   }, []);
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
+  useEffect(() => {
+    fetch('/api/admin/status', { cache: 'no-store' }).then((r) => r.json()).then(setStatus).catch(() => {});
+    loadSecurity();
+  }, [loadSecurity]);
 
-  const handleExportJson = () => {
+  const exportJson = () => {
     if (!data) return;
-    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data, null, 2))}`;
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', jsonString);
-    downloadAnchor.setAttribute('download', `kazi-portfolio-backup-${new Date().toISOString().slice(0, 10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    showToast('Database JSON exported successfully!');
+    const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `portfolio-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
   };
 
-  const handleImportJson = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const parsed = JSON.parse(event.target?.result as string);
-        if (!parsed.profile || !parsed.projects) {
-          showToast('Invalid portfolio backup JSON format.');
-          return;
-        }
-
-        const res = await fetch('/api/portfolio', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(parsed)
-        });
-
-        if (res.ok) {
-          setData(parsed);
-          showToast('Database restored from JSON successfully!');
-        } else {
-          showToast('Failed to save imported data.');
-        }
-      } catch {
-        showToast('Error parsing JSON backup file.');
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  const handleResetDefaults = async () => {
-    if (!confirm('Are you sure you want to reset all portfolio data back to default initial seed data? Any unsaved edits will be lost.')) return;
-
+  const importJson = async (file: File) => {
+    let parsed: unknown;
     try {
-      const res = await fetch('/api/portfolio/reset', { method: 'POST' });
-      const result = await res.json();
-      if (res.ok && result.data) {
-        setData(result.data);
-        showToast('Portfolio reset to initial seed defaults successfully!');
-      } else {
-        showToast('Failed to reset portfolio.');
-      }
+      parsed = JSON.parse(await file.text());
     } catch {
-      showToast('Error resetting portfolio.');
+      return toast('That file is not valid JSON.', 'error');
     }
+    if (!(await confirm(`Replace ALL current content with the contents of “${file.name}”?`, { title: 'Restore backup', confirmLabel: 'Replace everything', danger: true }))) return;
+    setBusy('import');
+    const result = await replaceAll(parsed);
+    setBusy(null);
+    toast(result.ok ? 'Backup restored.' : [result.error, ...(result.details ?? []).slice(0, 2)].join(' '), result.ok ? 'ok' : 'error');
+    loadSecurity();
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPwMessage(null);
-    setPwError(null);
-
-    if (newPassword.length < 4) {
-      setPwError('Password must be at least 4 characters.');
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setPwError('Passwords do not match.');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'change-password',
-          newPassword
-        })
-      });
-      const result = await res.json();
-      if (res.ok) {
-        setPwMessage('Admin password updated successfully!');
-        setNewPassword('');
-        setConfirmPassword('');
-      } else {
-        setPwError(result.error || 'Failed to update password.');
-      }
-    } catch {
-      setPwError('Error communicating with authentication server.');
-    }
+  const reset = async () => {
+    if (hasDirty() && !(await confirm('You have unsaved edits that will be lost.', { title: 'Unsaved changes', confirmLabel: 'Continue', danger: true }))) return;
+    if (!(await confirm('Replace ALL content with the original starter data? Every earlier version stays available in History, but export a backup first if unsure.', { title: 'Reset to starter content', confirmLabel: 'Reset everything', danger: true }))) return;
+    setBusy('reset');
+    const result = await resetAll();
+    setBusy(null);
+    toast(result.ok ? 'Reset to the starter content.' : result.error || 'Reset failed.', result.ok ? 'ok' : 'error');
+    loadSecurity();
   };
 
-  if (loading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
-        Loading Settings...
-      </div>
-    );
-  }
+  const revoke = async (s: SessionRow) => {
+    if (!(await confirm(s.current ? 'This will sign you out on this device.' : `Sign out ${deviceName(s.userAgent)}?`, { title: 'Sign out device', confirmLabel: 'Sign out', danger: true }))) return;
+    setBusy('revoke');
+    const res = await fetch(`/api/admin/sessions?id=${s.id}`, { method: 'DELETE' });
+    setBusy(null);
+    if (!res.ok) return toast('Could not sign that device out.', 'error');
+    if (s.current) return void (window.location.href = adminHref('/login'));
+    toast('Device signed out.');
+    loadSecurity();
+  };
+
+  const eraseAnalytics = async () => {
+    if (!(await confirm('Delete every recorded visit, click and session? Your messages and content are not affected. This cannot be undone.', { title: 'Erase analytics', confirmLabel: 'Erase analytics', danger: true }))) return;
+    setBusy('analytics');
+    const res = await fetch('/api/admin/analytics', { method: 'DELETE' });
+    setBusy(null);
+    if (!res.ok) return toast('Could not erase analytics.', 'error');
+    toast('Analytics erased.');
+    fetch('/api/admin/status', { cache: 'no-store' }).then((r) => r.json()).then(setStatus).catch(() => {});
+    loadSecurity();
+  };
+
+  const revokeAll = async () => {
+    if (!(await confirm('Every device, including this one, will be signed out. Use this if you think someone else has access.', { title: 'Sign out everywhere', confirmLabel: 'Sign out everywhere', danger: true }))) return;
+    await fetch('/api/admin/sessions?all=1', { method: 'DELETE' });
+    window.location.href = adminHref('/login');
+  };
 
   return (
-    <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-      {toast && (
-        <div className="toast-notice">
-          <Check size={18} color="#34d399" />
-          <span>{toast}</span>
-        </div>
-      )}
+    <>
+      <PageHeader title="Settings" description="The database, how the server is set up, who is signed in, and backups." />
 
-      {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem' }}>
-          <span className="tech-stamp tech-stamp-slate">DATABASE & SYSTEM</span>
-          <span className="tech-stamp tech-stamp-emerald">PERSISTENCE</span>
-        </div>
-        <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>Database & CMS Settings</h1>
-        <p style={{ fontSize: '0.88rem', color: '#64748b' }}>
-          Manage JSON backups, import data, reset initial defaults, and update administrator security PIN.
-        </p>
+      <div className="space-y-8">
+        {/* Database */}
+        <Card className="p-5 md:p-7">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-serif text-3xl font-normal text-char">Database</h2>
+            {status && <Badge tone={status.database.connected ? 'dark' : 'signal'}>{status.database.connected ? 'Connected' : 'Offline'}</Badge>}
+          </div>
+          {!status ? (
+            <p className="mt-3 text-sm text-mute">Checking…</p>
+          ) : status.database.connected ? (
+            <>
+              <p className="mt-3 text-sm text-charSoft leading-relaxed">
+                Everything you edit is saved in your Neon Postgres database, in its own <Code>portfolio</Code> schema, and the website updates the moment you
+                save. Round trip: {status.database.latencyMs} ms.
+              </p>
+              <dl className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-rule border border-rule">
+                {[
+                  ['Sections', status.database.counts?.sections],
+                  ['Saved versions', status.database.counts?.revisions],
+                  ['Messages', status.database.counts?.messages],
+                  ['Active sessions', status.database.counts?.sessions],
+                  ['Recorded visits', status.database.counts?.visits],
+                ].map(([label, value]) => (
+                  <div key={String(label)} className="bg-white p-4">
+                    <dd className="font-serif text-4xl leading-none text-char">{value ?? 0}</dd>
+                    <dt className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-mute">{label}</dt>
+                  </div>
+                ))}
+              </dl>
+            </>
+          ) : (
+            <div className="mt-3">
+              <Notice tone="warn" title="The database cannot be reached">
+                {status.database.error || 'Check DATABASE_URL in your environment, then run "npm run db:setup".'}
+              </Notice>
+            </div>
+          )}
+        </Card>
+
+        {/* Server setup */}
+        {status && (
+          <Card className="p-5 md:p-7">
+            <h2 className="font-serif text-3xl font-normal text-char">Server setup</h2>
+            <p className="mt-1 text-sm text-mute">Environment variables are read by the server; their values are never shown here.</p>
+            <ul className="mt-4">
+              <Row ok={status.database.connected} label="DATABASE_URL points at a working database" />
+              <Row
+                ok={status.auth.passwordSet}
+                label="ADMIN_PASSWORD is set"
+                hint={status.auth.devDefault ? 'Not set. A development-only password is active; it is disabled in production.' : !status.auth.passwordSet ? 'Required in production, or nobody can sign in.' : undefined}
+              />
+              <Row ok={status.auth.passwordStrong} label="The password is at least 12 characters" />
+              <Row ok={status.auth.secretSet} label="ADMIN_SECRET is set" hint="A random string that signs login cookies. Without it, the password is used." />
+              <Row ok={status.email.configured} label="RESEND_API_KEY is set (optional)" hint="Emails you a copy of every contact-form message." />
+              <Row ok={status.siteUrlSet} label="Site URL known" hint="Set “Website address” in Profile, or NEXT_PUBLIC_SITE_URL, for correct SEO links." />
+            </ul>
+          </Card>
+        )}
+
+        {/* Security */}
+        <Card className="p-5 md:p-7">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-serif text-3xl font-normal text-char">Security</h2>
+            <Button variant="danger" size="sm" onClick={revokeAll} disabled={busy === 'revoke'}>
+              <LogOut size={14} aria-hidden /> Sign out everywhere
+            </Button>
+          </div>
+
+          <h3 className="mt-5 font-mono text-xs uppercase tracking-[0.14em] text-signal">Signed-in devices</h3>
+          <ul className="mt-2 border-t border-char">
+            {sessions.length === 0 && <li className="py-4 text-sm text-mute">Loading…</li>}
+            {sessions.map((s) => (
+              <li key={s.id} className="flex items-center gap-3 border-b border-rule py-3">
+                <MonitorSmartphone size={18} className="shrink-0 text-mute" aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-char">
+                    {deviceName(s.userAgent)} {s.current && <Badge tone="dark">This device</Badge>}
+                  </p>
+                  <p className="truncate text-xs text-mute">
+                    {s.ip} · signed in {when(s.createdAt)} · last active {when(s.lastSeenAt)}
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => revoke(s)}>
+                  Sign out
+                </Button>
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="mt-7 font-mono text-xs uppercase tracking-[0.14em] text-signal">Recent activity</h3>
+          <ul className="mt-2 border-t border-char">
+            {audit.length === 0 && <li className="py-4 text-sm text-mute">No activity yet.</li>}
+            {audit.map((e) => (
+              <li key={e.id} className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-rule py-2.5 text-sm">
+                <span className={e.action === 'login_failed' || e.action === 'login_blocked' ? 'font-semibold text-signal' : 'text-char'}>
+                  {actionLabel[e.action] || e.action}
+                  {e.detail && <span className="text-mute font-normal"> · {e.detail}</span>}
+                </span>
+                <span className="font-mono text-xs text-mute">
+                  {when(e.at)} {e.ip && `· ${e.ip}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+
+        {/* Deploy guide */}
+        <Card className="p-5 md:p-7">
+          <h2 className="font-serif text-3xl font-normal text-char">Deploying on Vercel</h2>
+          <ol className="mt-4 space-y-4 text-sm text-charSoft leading-relaxed list-decimal pl-5 marker:font-mono marker:text-signal">
+            <li>
+              <strong className="text-char">Create the tables once</strong> from your computer: <Code>npm run db:setup</Code>. It also makes a restricted database user,
+              <Code>portfolio_app</Code>, that can only touch the portfolio's own tables.
+            </li>
+            <li>
+              <strong className="text-char">Add environment variables</strong> in Vercel → Project Settings → Environment Variables: <Code>DATABASE_URL</Code> (the
+              <Code>portfolio_app</Code> connection string from your <Code>.env.local</Code>), <Code>ADMIN_PASSWORD</Code>, and <Code>ADMIN_SECRET</Code>. Never add the
+              owner URL (<Code>DATABASE_ADMIN_URL</Code>) to Vercel.
+            </li>
+            <li>
+              <strong className="text-char">Optional:</strong> <Code>RESEND_API_KEY</Code> and <Code>CONTACT_TO_EMAIL</Code> to also get each message by email.
+            </li>
+            <li>
+              <strong className="text-char">Redeploy</strong>. Edits made here show on the live site immediately; no redeploy needed for content.
+            </li>
+          </ol>
+        </Card>
+
+        {/* Backup */}
+        <Card className="p-5 md:p-7">
+          <h2 className="font-serif text-3xl font-normal text-char">Backup & restore</h2>
+          <p className="mt-1 text-sm text-mute">Your whole site content as one JSON file. Restoring is all-or-nothing and checked before anything is written.</p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Button onClick={exportJson} disabled={!data}>
+              <Download size={16} aria-hidden /> Export JSON
+            </Button>
+            <Button variant="outline" onClick={() => fileInput.current?.click()} busy={busy === 'import'}>
+              <Upload size={16} aria-hidden /> Import JSON
+            </Button>
+            <input
+              ref={fileInput}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (file) importJson(file);
+              }}
+            />
+          </div>
+        </Card>
+
+        {/* Analytics data */}
+        <Card className="p-5 md:p-7">
+          <h2 className="font-serif text-3xl font-normal text-char">Analytics data</h2>
+          <p className="mt-1 text-sm text-mute">
+            Visits are stored anonymously in your database (no IP addresses, no cookies) and kept for about 14 months. You can erase everything at any time.
+          </p>
+          <div className="mt-5">
+            <Button variant="danger" onClick={eraseAnalytics} busy={busy === 'analytics'}>
+              <Trash2 size={16} aria-hidden /> Erase all analytics
+            </Button>
+          </div>
+        </Card>
+
+        {/* Danger */}
+        <Card tone="danger" className="p-5 md:p-7">
+          <h2 className="font-serif text-3xl font-normal text-char">Reset</h2>
+          <p className="mt-1 text-sm text-mute">Replace everything with the original starter content that shipped with the project. Earlier versions remain in History.</p>
+          <div className="mt-5">
+            <Button variant="danger" onClick={reset} busy={busy === 'reset'}>
+              <RotateCcw size={16} aria-hidden /> Reset to starter content
+            </Button>
+          </div>
+        </Card>
       </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-        {/* Backup & Export */}
-        <div className="spec-card" style={{ padding: '2rem', backgroundColor: '#ffffff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Database size={20} color="#059669" />
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>Data Backup & Portability</h2>
-            </div>
-            <span className="tech-stamp tech-stamp-slate">JSON DATASET</span>
-          </div>
-
-          <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-            Export a full JSON backup of your entire portfolio (profile, projects, skills, experience, and messages). You can restore this backup anytime on any local or production server.
-          </p>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem' }}>
-            <button onClick={handleExportJson} className="btn btn-primary">
-              <Download size={15} />
-              <span>Export Full Database (JSON)</span>
-            </button>
-
-            <label className="btn btn-outline" style={{ cursor: 'pointer' }}>
-              <Upload size={15} />
-              <span>Import Backup JSON</span>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImportJson}
-                style={{ display: 'none' }}
-              />
-            </label>
-          </div>
-        </div>
-
-        {/* Change Admin Password */}
-        <div className="spec-card" style={{ padding: '2rem', backgroundColor: '#ffffff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <KeyRound size={20} color="#d97706" />
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>Change Master Security PIN</h2>
-            </div>
-            <span className="tech-stamp tech-stamp-amber">AUTHENTICATION</span>
-          </div>
-
-          <p style={{ fontSize: '0.88rem', color: '#64748b', marginBottom: '1.5rem' }}>
-            Default active PIN is: <code style={{ color: '#0f172a', fontWeight: 700, backgroundColor: '#f1f5f9', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>{data?.adminSettings?.adminPin || 'admin123'}</code>
-          </p>
-
-          <form onSubmit={handleChangePassword} style={{ maxWidth: '440px' }}>
-            <div className="form-group">
-              <label className="form-label">New Password / PIN</label>
-              <input
-                type="password"
-                required
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter at least 4 characters"
-                className="form-input"
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Confirm New Password</label>
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-type new password"
-                className="form-input"
-              />
-            </div>
-
-            {pwError && (
-              <div style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 600 }}>
-                {pwError}
-              </div>
-            )}
-
-            {pwMessage && (
-              <div style={{ color: '#059669', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 600 }}>
-                {pwMessage}
-              </div>
-            )}
-
-            <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>
-              <Lock size={14} />
-              <span>Update Password</span>
-            </button>
-          </form>
-        </div>
-
-        {/* Reset to Initial Defaults */}
-        <div className="spec-card" style={{ padding: '2rem', backgroundColor: '#ffffff', border: '1px solid #fecaca' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid #fee2e2', paddingBottom: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <RotateCcw size={20} color="#dc2626" />
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#dc2626' }}>Reset Database to Seed Defaults</h2>
-            </div>
-            <span className="tech-stamp tech-stamp-red">DANGER ZONE</span>
-          </div>
-
-          <p style={{ fontSize: '0.88rem', color: '#64748b', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-            Restore the original portfolio dataset (Kazi&apos;s verified projects, Google Bug Hunters credentials, SoftStandard Solutions experience, and test suites).
-          </p>
-
-          <button 
-            onClick={handleResetDefaults} 
-            className="btn btn-outline" 
-            style={{ borderColor: '#fca5a5', color: '#dc2626' }}
-          >
-            <RotateCcw size={15} />
-            <span>Reset to Initial Default Seed Data</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

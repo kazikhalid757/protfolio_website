@@ -1,11 +1,17 @@
 import { MetadataRoute } from 'next';
+import { getContentUpdatedAt, getPortfolioData } from '@/lib/data';
+import { getSiteUrl } from '@/lib/site';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = 'force-dynamic';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { profile } = await getPortfolioData();
+  const updated = await getContentUpdatedAt();
   return [
     {
-      url: 'https://kazitamim.dev',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
+      url: getSiteUrl(profile),
+      lastModified: updated ? new Date(updated) : undefined,
+      changeFrequency: 'monthly',
       priority: 1.0,
     },
   ];

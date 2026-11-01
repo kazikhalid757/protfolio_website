@@ -35,6 +35,13 @@ module.exports = {
           925: '#121215',
           950: '#09090b',
         },
+        paper: '#F5F2EA',
+        paperDeep: '#ECE8DC',
+        char: '#121212',
+        charSoft: '#2B2A27',
+        mute: '#6B675E',
+        rule: '#D8D3C5',
+        signal: '#FF4F1F',
         brand: {
           emerald: '#10b981',
           cyan: '#06b6d4',
@@ -42,9 +49,10 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['Fira Code', 'JetBrains Mono', 'ui-monospace', 'monospace'],
+        sans: ['var(--nf-sans)', 'Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['var(--nf-sans)', 'Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['var(--nf-serif)', 'Instrument Serif', 'Georgia', 'serif'],
+        mono: ['var(--nf-mono)', 'Fira Code', 'JetBrains Mono', 'ui-monospace', 'monospace'],
       },
     },
   },

@@ -1,277 +1,177 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { 
-  MessageSquare, 
-  Trash2, 
-  Mail, 
-  Check, 
-  ExternalLink, 
-  Clock, 
-  User, 
-  Eye, 
-  X, 
-  Reply 
-} from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ChevronDown, Mail, MailOpen, Reply, Trash2 } from 'lucide-react';
+import { useAdmin } from '@/components/admin/AdminContext';
+import { Badge, Button, Card, Notice, PageHeader, Spinner } from '@/components/admin/ui';
+import { ADMIN_LOGIN_EXPIRED } from '@/lib/adminPath';
 
-export default function AdminMessages() {
-  const [data, setData] = useState<any>(null);
-  const [messages, setMessages] = useState<any[]>([]);
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  date: string;
+  read: boolean;
+}
+
+const when = (iso: string) =>
+  new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+export default function MessagesPage() {
+  const { toast, confirm, refreshUnread } = useAdmin();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [available, setAvailable] = useState(true);
+  const [emailDelivery, setEmailDelivery] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeMessage, setActiveMessage] = useState<any | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [open, setOpen] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/messages', { cache: 'no-store' });
+      if (res.status === 401) return void (window.location.href = ADMIN_LOGIN_EXPIRED);
+      const json = await res.json();
+      setMessages(json.messages || []);
+      setAvailable(json.available);
+      setEmailDelivery(json.emailDelivery);
+    } catch {
+      toast('Could not load messages.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => {
-    fetch('/api/portfolio')
-      .then(res => res.json())
-      .then(d => {
-        setData(d);
-        setMessages(d.messages || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+    load();
+  }, [load]);
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
-
-  const handleToggleRead = async (id: string, currentRead: boolean) => {
-    const updated = messages.map(m => m.id === id ? { ...m, read: !currentRead } : m);
-    const updatedData = { ...data, messages: updated };
-
-    try {
-      const res = await fetch('/api/portfolio', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData)
-      });
-      if (res.ok) {
-        setMessages(updated);
-        setData(updatedData);
-        showToast(!currentRead ? 'Marked as read' : 'Marked as unread');
-      }
-    } catch {
-      showToast('Error updating message status.');
+  const setRead = async (m: Message, read: boolean) => {
+    setMessages((all) => all.map((x) => (x.id === m.id ? { ...x, read } : x)));
+    const res = await fetch('/api/admin/messages', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: m.id, read }),
+    });
+    if (!res.ok) {
+      toast('Could not update the message.', 'error');
+      load();
     }
+    refreshUnread();
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this inquiry?')) return;
-
-    const updated = messages.filter(m => m.id !== id);
-    const updatedData = { ...data, messages: updated };
-
-    try {
-      const res = await fetch('/api/portfolio', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData)
-      });
-      if (res.ok) {
-        setMessages(updated);
-        setData(updatedData);
-        if (activeMessage?.id === id) setActiveMessage(null);
-        showToast('Message deleted.');
-      }
-    } catch {
-      showToast('Error deleting message.');
-    }
+  const toggle = (m: Message) => {
+    const opening = open !== m.id;
+    setOpen(opening ? m.id : null);
+    if (opening && !m.read) setRead(m, true);
   };
 
-  if (loading) {
-    return <div style={{ textAlign: 'center', padding: '4rem 0' }}>Loading Inquiries...</div>;
-  }
+  const remove = async (m: Message) => {
+    if (!(await confirm(`Delete the message from ${m.name}? This cannot be undone.`, { title: 'Delete message', confirmLabel: 'Delete', danger: true }))) return;
+    const res = await fetch(`/api/admin/messages?id=${encodeURIComponent(m.id)}`, { method: 'DELETE' });
+    if (!res.ok) return toast('Could not delete the message.', 'error');
+    setMessages((all) => all.filter((x) => x.id !== m.id));
+    toast('Message deleted.');
+    refreshUnread();
+  };
 
-  const unreadCount = messages.filter(m => !m.read).length;
+  const shown = filter === 'unread' ? messages.filter((m) => !m.read) : messages;
+  const unread = messages.filter((m) => !m.read).length;
 
   return (
-    <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-      {toast && (
-        <div className="toast-notice">
-          <Check size={18} color="var(--brand-emerald)" />
-          <span>{toast}</span>
+    <>
+      <PageHeader
+        title="Messages"
+        description="Enquiries sent through the contact form on your website."
+        actions={
+          (
+            <div className="flex border border-char" role="group" aria-label="Filter">
+              {(['all', 'unread'] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  aria-pressed={filter === f}
+                  className={`h-9 px-4 text-sm font-medium capitalize ${filter === f ? 'bg-char text-paper' : 'bg-white text-char hover:bg-paperDeep'}`}
+                >
+                  {f}
+                  {f === 'unread' && unread > 0 ? ` (${unread})` : ''}
+                </button>
+              ))}
+            </div>
+          )
+        }
+      />
+
+      {emailDelivery && (
+        <div className="mb-4">
+          <Notice>Each new message is also emailed to you.</Notice>
         </div>
       )}
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Contact Inquiries Inbox</h1>
-            {unreadCount > 0 && (
-              <span className="badge badge-rose">{unreadCount} New</span>
-            )}
-          </div>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-            Messages received through the public portfolio contact form.
-          </p>
-        </div>
-      </div>
-
-      {messages.length === 0 ? (
-        <div className="glass-panel" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: 'var(--radius-xl)' }}>
-          <MessageSquare size={48} color="var(--text-muted)" style={{ margin: '0 auto 1rem auto' }} />
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 600, marginBottom: '0.5rem' }}>No Inquiries Yet</h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            When clients or recruiters submit messages through your contact form, they will appear here.
-          </p>
-        </div>
+      {loading ? (
+        <Spinner />
+      ) : shown.length === 0 ? (
+        <Card className="px-6 py-14 text-center">
+          <MailOpen size={32} className="mx-auto text-mute" aria-hidden />
+          <p className="mt-4 font-serif text-3xl text-char">{filter === 'unread' ? 'No unread messages' : 'No messages yet'}</p>
+          <p className="mt-2 text-sm text-mute">When someone uses the contact form, it will show up here.</p>
+        </Card>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className="glass-panel"
-              style={{
-                padding: '1.5rem',
-                borderRadius: 'var(--radius-lg)',
-                borderLeft: !msg.read ? '4px solid var(--brand-cyan)' : '4px solid transparent',
-                background: !msg.read ? 'rgba(56, 189, 248, 0.05)' : 'var(--bg-card)',
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '1rem'
-              }}
-            >
-              <div style={{ flex: 1, minWidth: '260px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem' }}>
-                  <span style={{ fontWeight: 700, fontSize: '1.05rem' }}>{msg.name}</span>
-                  {!msg.read && <span className="badge badge-cyan" style={{ fontSize: '0.7rem' }}>NEW</span>}
-                </div>
-
-                <div style={{ fontSize: '0.82rem', color: 'var(--brand-cyan)', marginBottom: '0.4rem' }}>
-                  <a href={`mailto:${msg.email}`} style={{ textDecoration: 'underline' }}>{msg.email}</a>
-                  {msg.date && (
-                    <span style={{ color: 'var(--text-muted)', marginLeft: '0.75rem' }}>
-                      {new Date(msg.date).toLocaleDateString()} {new Date(msg.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <ul className="space-y-3">
+          {shown.map((m) => {
+            const isOpen = open === m.id;
+            return (
+              <li key={m.id} className={`border bg-white ${isOpen ? 'border-char' : 'border-rule'}`}>
+                <button
+                  onClick={() => toggle(m)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-start gap-4 px-5 py-4 text-left"
+                >
+                  <span className={`mt-1.5 w-2.5 h-2.5 shrink-0 ${m.read ? 'bg-rule' : 'bg-signal'}`} aria-label={m.read ? 'Read' : 'Unread'} />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-baseline justify-between gap-x-4">
+                      <span className={`truncate ${m.read ? 'font-medium text-charSoft' : 'font-bold text-char'}`}>{m.name}</span>
+                      <span className="font-mono text-xs text-mute">{when(m.date)}</span>
                     </span>
-                  )}
-                </div>
-
-                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.25rem' }}>
-                  Subject: {msg.subject || 'Portfolio Inquiry'}
-                </div>
-
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, maxHeight: '42px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {msg.message}
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <button
-                  onClick={() => setActiveMessage(msg)}
-                  className="btn btn-outline btn-sm"
-                  title="View Full Message"
-                >
-                  <Eye size={14} />
-                  Read Full
+                    <span className="block truncate text-sm text-char">{m.subject}</span>
+                    {!isOpen && <span className="block truncate text-sm text-mute">{m.message}</span>}
+                  </span>
+                  <ChevronDown size={18} className={`mt-1 shrink-0 text-mute transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden />
                 </button>
 
-                <button
-                  onClick={() => handleToggleRead(msg.id, msg.read)}
-                  className="btn btn-ghost btn-sm"
-                  title={msg.read ? 'Mark as Unread' : 'Mark as Read'}
-                >
-                  <Check size={14} color={msg.read ? 'var(--brand-emerald)' : 'var(--text-muted)'} />
-                </button>
-
-                <button
-                  onClick={() => handleDelete(msg.id)}
-                  className="btn btn-ghost btn-sm"
-                  title="Delete Inquiry"
-                >
-                  <Trash2 size={14} color="var(--brand-rose)" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+                {isOpen && (
+                  <div className="border-t border-rule bg-paper/60 px-5 py-5">
+                    <p className="mb-3 text-sm text-mute">
+                      From <strong className="text-char">{m.name}</strong> ·{' '}
+                      <a href={`mailto:${m.email}`} className="underline underline-offset-2 decoration-signal text-char">
+                        {m.email}
+                      </a>
+                    </p>
+                    <p className="whitespace-pre-wrap break-words leading-relaxed text-char">{m.message}</p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      <a
+                        href={`mailto:${m.email}?subject=${encodeURIComponent('Re: ' + m.subject)}`}
+                        className="inline-flex items-center gap-2 h-9 px-3 bg-char text-paper text-sm font-medium hover:bg-signal transition-colors"
+                      >
+                        <Reply size={15} aria-hidden /> Reply by email
+                      </a>
+                      <Button variant="outline" size="sm" onClick={() => setRead(m, !m.read)}>
+                        {m.read ? <Mail size={15} aria-hidden /> : <MailOpen size={15} aria-hidden />}
+                        Mark as {m.read ? 'unread' : 'read'}
+                      </Button>
+                      <Button variant="danger" size="sm" onClick={() => remove(m)}>
+                        <Trash2 size={15} aria-hidden /> Delete
+                      </Button>
+                      {!m.read && <Badge tone="signal">New</Badge>}
+                    </div>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       )}
-
-      {/* Message Detail Modal */}
-      {activeMessage && (
-        <div 
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(15, 23, 42, 0.45)',
-            zIndex: 1000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem'
-          }}
-        >
-          <div 
-            className="spec-card"
-            style={{
-              maxWidth: '600px',
-              width: '100%',
-              padding: '2rem',
-              backgroundColor: '#ffffff',
-              border: '1px solid #cbd5e1',
-              boxShadow: '0 20px 40px rgba(15, 23, 42, 0.15)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <MessageSquare size={18} color="#059669" />
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Inquiry Details</h2>
-              </div>
-              <button onClick={() => setActiveMessage(null)} className="btn btn-ghost btn-sm">
-                <X size={18} />
-              </button>
-            </div>
-
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem' }}>
-              <div style={{ fontSize: '0.9rem', marginBottom: '0.35rem' }}>
-                <strong>From:</strong> {activeMessage.name} (&lt;{activeMessage.email}&gt;)
-              </div>
-              <div style={{ fontSize: '0.9rem', marginBottom: '0.35rem' }}>
-                <strong>Subject:</strong> {activeMessage.subject || 'General Inquiry'}
-              </div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                <strong>Received:</strong> {new Date(activeMessage.date).toLocaleString()}
-              </div>
-            </div>
-
-            <div style={{ marginBottom: '1.75rem' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                MESSAGE:
-              </div>
-              <div style={{ padding: '1.25rem', background: 'rgba(0, 0, 0, 0.3)', borderRadius: 'var(--radius-md)', fontSize: '0.95rem', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                {activeMessage.message}
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <a
-                href={`mailto:${activeMessage.email}?subject=Re: ${encodeURIComponent(activeMessage.subject || 'Portfolio Inquiry')}`}
-                className="btn btn-primary"
-              >
-                <Reply size={16} />
-                Reply via Email Client
-              </a>
-
-              <button
-                onClick={() => {
-                  handleDelete(activeMessage.id);
-                  setActiveMessage(null);
-                }}
-                className="btn btn-ghost"
-                style={{ color: 'var(--brand-rose)' }}
-              >
-                <Trash2 size={16} />
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }

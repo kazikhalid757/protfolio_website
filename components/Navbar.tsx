@@ -1,180 +1,144 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { 
-  Menu, 
-  X, 
-  Lock, 
-  ExternalLink,
-  ChevronRight
-} from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import type { Profile } from '@/lib/schemas';
 
 interface NavbarProps {
-  profile?: any;
+  profile: Profile;
 }
 
+const links = [
+  { href: '#work', label: 'Work' },
+  { href: '#products', label: 'Products' },
+  { href: '#services', label: 'Services' },
+  { href: '#skills', label: 'Skills' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#recognition', label: 'Recognition' },
+  { href: '#contact', label: 'Contact' },
+];
+
 export default function Navbar({ profile }: NavbarProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeNav, setActiveNav] = useState('about');
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const navLinks = [
-    { id: 'about', name: 'Overview', href: '#about' },
-    { id: 'capabilities', name: 'Capabilities', href: '#capabilities' },
-    { id: 'skills', name: 'Stack', href: '#skills' },
-    { id: 'systems', name: 'Projects', href: '#systems' },
-    { id: 'awards', name: 'Awards', href: '#awards' },
-    { id: 'track-record', name: 'Experience', href: '#track-record' },
-    { id: 'contact', name: 'Contact', href: '#contact' },
-  ];
-
-  const upworkUrl = profile?.socials?.upwork || 'https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share';
+  const bar = useRef<HTMLDivElement>(null);
+  const name = profile?.shortName || 'Kazi Tamim';
+  const [first, ...rest] = name.split(' ');
+  const last = rest.join(' ');
+  const initials = name
+    .split(' ')
+    .map((w: string) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-
-      // Scroll spy
-      const sections = navLinks.map(l => document.getElementById(l.id)).filter(Boolean);
-      const scrollPos = window.scrollY + 120;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const sec = sections[i];
-        if (sec && sec.offsetTop <= scrollPos) {
-          setActiveNav(sec.id);
-          break;
-        }
-      }
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (bar.current) bar.current.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    onScroll();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onResize = () => window.innerWidth >= 1024 && setOpen(false);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+    };
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 w-full transition-all duration-200 ${
-      scrolled 
-        ? 'bg-surface/95 backdrop-blur-md border-b border-borderLight shadow-sm' 
-        : 'bg-surface border-b border-borderLight'
-    }`}>
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        
-        {/* Clean Modern Brand */}
-        <Link href="#about" className="flex items-center gap-2.5 shrink-0 group focus:outline-none">
-          <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center text-white shrink-0 group-hover:bg-inkHover transition-colors shadow-sm">
-            <span className="font-mono text-emerald-400 font-bold text-xs">&gt;_</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-display font-bold text-sm sm:text-base tracking-tight text-ink">
-              Kazi Tamim
+    <header
+      className={`sticky top-0 z-50 bg-paper border-b transition-colors ${
+        scrolled ? 'border-rule' : 'border-transparent'
+      }`}
+    >
+      <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+        <a href="#top" aria-label={`${name}, back to top`} className="group flex shrink-0 items-center gap-3 whitespace-nowrap">
+          <span
+            className="grid place-items-center w-10 h-10 bg-char text-paper font-mono text-sm font-semibold tracking-tight group-hover:bg-signal transition-colors"
+            aria-hidden
+          >
+            {initials}
+          </span>
+          <span className="leading-none">
+            <span className="block font-serif text-[26px] tracking-tight text-char">
+              {first}
+              {last && <span className="italic"> {last}</span>}
             </span>
-            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-emeraldSurface border border-emeraldBorder text-emeraldText">
-              SDET
+            <span className="block mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-mute">
+              QA &amp; Automation
             </span>
-          </div>
-        </Link>
+          </span>
+        </a>
 
-        {/* Streamlined Desktop Navigation Links (Clean, No Numbered Noise) */}
-        <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => {
-            const isActive = activeNav === link.id;
-            return (
-              <a
-                key={link.id}
-                href={link.href}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold tracking-wide transition-all ${
-                  isActive 
-                    ? 'bg-nested text-emeraldSolid border border-borderLight font-bold' 
-                    : 'text-inkMuted hover:text-ink hover:bg-nested/70'
-                }`}
-              >
-                {link.name}
+        <ul className="hidden lg:flex items-center gap-8">
+          {links.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} className="block py-3 -my-3 text-sm text-mute hover:text-char transition-colors">
+                {l.label}
               </a>
-            );
-          })}
-        </nav>
+            </li>
+          ))}
+        </ul>
 
-        {/* Right CTA Cluster */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <a
-            href={upworkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:py-2 rounded-md text-xs font-semibold bg-emeraldSolid hover:bg-[#047857] text-white whitespace-nowrap shadow-sm transition-all"
-          >
-            <span>Hire on Upwork</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+        <a
+          href="#contact"
+          data-track="hire_me"
+          data-track-label="Nav button"
+          className="hidden lg:inline-flex shrink-0 items-center h-9 px-4 text-sm font-medium whitespace-nowrap bg-char text-paper hover:bg-signal transition-colors"
+        >
+          Hire me
+        </a>
 
-          <a
-            href="#contact"
-            className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 sm:py-2 rounded-md text-xs font-semibold bg-ink hover:bg-inkHover text-white whitespace-nowrap transition-colors"
-          >
-            Get in Touch
-          </a>
+        <button
+          type="button"
+          className="lg:hidden grid place-items-center w-11 h-11 -mr-2 text-char"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </nav>
 
-          <Link
-            href="/admin"
-            className="p-2 rounded-md bg-nested border border-borderLight text-inkMuted hover:text-ink hover:border-borderHover transition-colors"
-            title="Admin CMS"
-          >
-            <Lock className="w-3.5 h-3.5" />
-          </Link>
+      <div
+        ref={bar}
+        aria-hidden
+        className="absolute left-0 right-0 -bottom-px h-0.5 bg-signal origin-left"
+        style={{ transform: 'scaleX(0)' }}
+      />
 
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            aria-label="Toggle Navigation"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-md bg-nested border border-borderLight text-ink hover:border-borderHover transition-colors"
-          >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Robust Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-surface/98 backdrop-blur-lg border-b border-borderLight px-4 py-4 space-y-3 shadow-lg">
-          <div className="grid grid-cols-2 gap-1.5">
-            {navLinks.map((link) => {
-              const isActive = activeNav === link.id;
-              return (
+      {open && (
+        <div className="lg:hidden bg-paper border-t border-rule max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
+          <ul className="max-w-6xl mx-auto px-5 sm:px-8 py-3">
+            {links.map((l) => (
+              <li key={l.href}>
                 <a
-                  key={link.id}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-between ${
-                    isActive 
-                      ? 'bg-nested text-emeraldSolid border border-borderLight' 
-                      : 'text-inkMuted hover:text-ink hover:bg-nested'
-                  }`}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  className="block py-3.5 text-char border-b border-rule"
                 >
-                  <span>{link.name}</span>
-                  <ChevronRight className="w-3 h-3 text-inkSubtle" />
+                  {l.label}
                 </a>
-              );
-            })}
-          </div>
-          <div className="flex items-center gap-2 pt-2 border-t border-borderLight">
-            <a
-              href="#contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex-1 text-center py-2 rounded-md text-xs font-semibold bg-ink text-white"
-            >
-              Get in Touch
-            </a>
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-md text-xs font-semibold bg-nested border border-borderLight text-ink flex items-center gap-1.5"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>CMS</span>
-            </Link>
-          </div>
+              </li>
+            ))}
+            <li className="pt-4 pb-2">
+              <a
+                href="#contact"
+                data-track="hire_me"
+                data-track-label="Mobile menu"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center h-12 bg-char text-paper font-medium hover:bg-signal transition-colors"
+              >
+                Hire me
+              </a>
+            </li>
+          </ul>
         </div>
       )}
     </header>

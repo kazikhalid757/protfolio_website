@@ -1,311 +1,154 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
-import { Briefcase, Calendar, MapPin, CheckCircle2, ShieldCheck, Activity } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Download, Github, Linkedin } from 'lucide-react';
+import { safeUrl } from '@/lib/safeUrl';
+import type { Experience, Profile } from '@/lib/schemas';
 
 interface HeroProps {
-  profile: any;
-  experiences?: any[];
+  profile: Profile;
+  experiences?: Experience[];
 }
 
+const metricLabels: Record<string, string> = {
+  yearsExperience: 'Years in QA',
+  saasProducts: 'SaaS products tested',
+  automationRepos: 'Automation repos',
+  googleVrpAwards: 'Google VRP awards',
+};
+
 export default function Hero({ profile, experiences }: HeroProps) {
-  const p = profile || {};
-  const metrics = p.metrics || {};
-  const socials = p.socials || {};
-
-  // Dynamically detect current active role
-  const currentExp = experiences?.find((e: any) => 
-    e.period?.toLowerCase().includes('present')
-  ) || experiences?.[0];
-
-  const frameworks = [
-    'Playwright',
-    'Cypress',
-    'Selenium Grid',
-    'REST Assured',
-    'Docker',
-    'GitHub Actions'
-  ];
+  const p = profile;
+  const metrics = Object.entries(p.metrics || {}).filter(([k]) => metricLabels[k]);
+  const current = experiences?.find((e) => e.period?.toLowerCase().includes('present'));
+  const firstName = (p.shortName || 'Kazi').split(' ')[0];
 
   return (
-    <section id="about" className="scroll-mt-24 pt-8 pb-12">
-      {/* Anchor alias for #overview */}
-      <span id="overview" className="sr-only">Overview</span>
-
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
-        {/* ===================================================================
-             HERO 12-COLUMN ARCHITECTURAL GRID (Equally balanced columns)
-             =================================================================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          
-          {/* LEFT COLUMN (7 Cols) - Headline, Intro, Actions & Telemetry Metrics */}
-          <div className="lg:col-span-7 flex flex-col justify-between py-1 space-y-6">
-            
-            {/* Top Block: Status, Headline, Bio, Buttons */}
-            <div className="space-y-6">
-              {/* Top Status Pill */}
-              <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface border border-borderLight shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                <span className="font-mono text-[11px] font-semibold tracking-wider text-ink uppercase">
-                  Systems Operational // Available for SDET Roles
-                </span>
-              </div>
-
-              {/* Display Headline */}
-              <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-[52px] text-ink tracking-tight leading-[1.08]">
-                Engineering{' '}
-                <span className="text-emeraldSolid border-b-4 border-emeraldSolid pb-0.5">
-                  Zero-Defect Releases
-                </span>{' '}
-                Through Test Architecture.
-              </h1>
-
-              {/* Lead Paragraph */}
-              <p className="text-base sm:text-lg text-inkMuted leading-relaxed max-w-2xl font-normal">
-                I'm <strong className="font-semibold text-ink">{p.name || 'Kazi Khalid Hasan Tamim'}</strong>, a QA &amp; Test Automation Engineer (SDET) with 3+ years of experience. I architect resilient test frameworks in <strong className="font-semibold text-ink">Playwright</strong>, <strong className="font-semibold text-ink">Cypress</strong>, and <strong className="font-semibold text-ink">REST Assured</strong>, paired with automated <strong className="font-semibold text-ink">CI/CD Quality Gates</strong> to guarantee zero-defect releases.
+    <section id="top" className="scroll-mt-20">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center">
+          <div className="md:col-span-7">
+            <p className="mb-5 font-mono text-xs uppercase tracking-[0.14em] text-mute">
+              {p.name}
+              {p.title ? <> · {p.title}</> : null}
+              {p.location ? <> · {p.location.split(',').slice(-2).join(',').replace(/\s*-\s*\d+/, '').trim()}</> : null}
+            </p>
+            {p.availableForHire && (
+              <p className="inline-flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-char mb-8">
+                <span className="w-2 h-2 bg-signal" aria-hidden />
+                {p.availabilityStatus || 'Available for work'}
               </p>
+            )}
 
-              {/* Action Bar */}
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                {/* 1. View Capabilities */}
-                <a 
-                  href="#capabilities"
-                  className="inline-flex items-center gap-2.5 px-5 py-3 rounded-md bg-ink hover:bg-inkHover text-white font-mono text-xs sm:text-sm font-semibold micro-transition cursor-pointer shadow-sm"
-                >
-                  <span className="text-[#10B981] font-bold">&gt;_</span>
-                  <span>View Capabilities</span>
-                </a>
+            <h1 className="font-serif font-normal text-5xl sm:text-6xl lg:text-7xl leading-[1.02] tracking-tight text-char">
+              Hi, I&apos;m {firstName}.
+              <br />
+              <span className="italic text-signal">QA &amp; automation</span> engineer.
+            </h1>
 
-                {/* 2. Hire on Upwork */}
-                <a 
-                  href={socials.upwork || 'https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share'}
-                  target="_blank" 
+            <p className="mt-8 text-xl leading-relaxed text-charSoft max-w-xl">{p.tagline}</p>
+            <p className="mt-4 text-base leading-relaxed text-mute max-w-xl">{p.bio}</p>
+
+            {current && (
+              <p className="mt-6 text-sm text-mute">
+                Now at <span className="text-char font-medium">{current.company}</span>
+                {current.product ? <>, testing {current.product}</> : null}.
+              </p>
+            )}
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <a
+                href="#products"
+                data-track="see_work"
+                className="inline-flex items-center gap-2 h-12 px-6 bg-char text-paper font-medium hover:bg-signal transition-colors"
+              >
+                See my work <ArrowDown size={16} />
+              </a>
+              {safeUrl(p.resumeUrl) && (
+                <a
+                  href={safeUrl(p.resumeUrl)}
+                  data-track="cv_download"
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-emeraldSolid hover:bg-[#047857] text-white text-xs sm:text-sm font-semibold micro-transition shadow-sm"
+                  className="inline-flex items-center gap-2 h-12 px-6 border border-char text-char font-medium hover:bg-char hover:text-paper transition-colors"
                 >
-                  <span>Hire on Upwork</span>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                    <path d="M7 17L17 7M17 7H8M17 7V16"/>
-                  </svg>
+                  Download CV <Download size={16} />
                 </a>
+              )}
+            </div>
 
-                {/* 3. Download CV */}
-                {p.resumeUrl && (
-                  <a 
-                    href={p.resumeUrl}
+            {(safeUrl(p.socials?.github) || safeUrl(p.socials?.linkedin)) && (
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <span className="font-mono text-xs uppercase tracking-[0.14em] text-mute mr-1">Find me on</span>
+                {safeUrl(p.socials?.github) && (
+                  <a
+                    href={safeUrl(p.socials.github)}
+                    data-track="social_github"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-3 rounded-md bg-surface hover:bg-nested text-ink border border-borderHover text-xs sm:text-sm font-semibold micro-transition cursor-pointer"
-                    title="Download Official CV"
+                    className="group inline-flex items-center gap-2 h-11 pl-3 pr-4 bg-white border border-rule text-char font-medium hover:border-char transition-colors"
                   >
-                    <svg className="w-4 h-4 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    <span>Download CV</span>
+                    <Github size={18} /> GitHub
+                    <ArrowUpRight size={14} className="text-mute group-hover:text-signal" />
+                  </a>
+                )}
+                {safeUrl(p.socials?.linkedin) && (
+                  <a
+                    href={safeUrl(p.socials.linkedin)}
+                    data-track="social_linkedin"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 h-11 pl-3 pr-4 bg-white border border-rule text-char font-medium hover:border-char transition-colors"
+                  >
+                    <Linkedin size={18} /> LinkedIn
+                    <ArrowUpRight size={14} className="text-mute group-hover:text-signal" />
                   </a>
                 )}
               </div>
-            </div>
-
-            {/* Smart Space Management: Verified QA Telemetry Metrics (Fills left column with high-signal proof) */}
-            <div className="pt-6 border-t border-borderLight space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Activity className="w-3.5 h-3.5 text-emeraldSolid" />
-                  <span className="font-mono text-[11px] font-bold text-inkSubtle uppercase tracking-wider">
-                    VERIFIED QA TELEMETRY
-                  </span>
-                </div>
-                <span className="font-mono text-[11px] font-semibold text-emeraldSolid">
-                  Production SLA Benchmarks
-                </span>
-              </div>
-
-              {/* 2x2 Metric Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                {/* Metric 01: Automated Test Runs */}
-                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-borderHover shadow-sm transition-all">
-                  <div className="font-mono text-[10px] font-bold text-inkSubtle uppercase tracking-wider">
-                    AUTOMATED TEST RUNS
-                  </div>
-                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-ink mt-1 tracking-tight">
-                    {metrics.automatedTestsExecuted || '18,500+'}
-                  </div>
-                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
-                    Completed test executions
-                  </p>
-                </div>
-
-                {/* Metric 02: Pipeline Pass Rate */}
-                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-emeraldBorder shadow-sm transition-all">
-                  <div className="font-mono text-[10px] font-bold text-emeraldSolid uppercase tracking-wider">
-                    PIPELINE PASS SLA
-                  </div>
-                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-emeraldSolid mt-1 tracking-tight">
-                    {metrics.pipelinePassRate || '99.8%'}
-                  </div>
-                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
-                    Flakiness-free execution rate
-                  </p>
-                </div>
-
-                {/* Metric 03: Regressions Blocked */}
-                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-amberBorder shadow-sm transition-all">
-                  <div className="font-mono text-[10px] font-bold text-amber-600 uppercase tracking-wider">
-                    REGRESSIONS BLOCKED
-                  </div>
-                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1 tracking-tight">
-                    {metrics.bugsCaughtPreProd || '480+'}
-                  </div>
-                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
-                    Pre-production defects caught
-                  </p>
-                </div>
-
-                {/* Metric 04: Defect Escape */}
-                <div className="p-3.5 rounded-xl bg-surface border border-borderLight hover:border-blueBorder shadow-sm transition-all">
-                  <div className="font-mono text-[10px] font-bold text-blue-600 uppercase tracking-wider">
-                    DEFECT ESCAPE SLA
-                  </div>
-                  <div className="font-mono text-2xl sm:text-3xl font-extrabold text-blue-600 mt-1 tracking-tight">
-                    &lt; 0.2%
-                  </div>
-                  <p className="text-[11px] font-medium text-inkMuted mt-0.5">
-                    Strict production release gate
-                  </p>
-                </div>
-              </div>
-
-              {/* Core Frameworks Pill Row */}
-              <div className="p-3 rounded-xl bg-canvas border border-borderLight flex flex-wrap items-center justify-between gap-2">
-                <span className="font-mono text-[10px] font-bold text-inkSubtle uppercase">
-                  ACTIVE FRAMEWORKS:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {frameworks.map((tool) => (
-                    <span 
-                      key={tool} 
-                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-surface border border-borderLight text-ink font-semibold"
-                    >
-                      {tool}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
+            )}
           </div>
 
-          {/* RIGHT COLUMN (5 Cols) - Full Picture + Dynamic Current Company Work Info */}
-          <div className="lg:col-span-5 flex flex-col justify-between">
-            <div className="bg-surface border border-borderLight rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-5 h-full flex flex-col justify-between">
-              
-              {/* Full Portrait Photo (Exact 3:4 Aspect Ratio of original photo) */}
-              <div className="relative w-full aspect-[3/4] max-w-[420px] mx-auto rounded-xl overflow-hidden bg-nested border border-borderLight shadow-sm">
-                <Image 
-                  src={p.avatar || '/images/kazi-tamim.jpg'} 
-                  alt={p.name || 'Kazi Khalid Hasan Tamim'}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 420px"
-                  style={{ objectFit: 'cover' }}
-                  priority
-                  className="rounded-xl"
-                />
-                {/* Active Availability Badge on Image */}
-                <div className="absolute bottom-3 left-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-white/10 text-white shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="font-mono text-xs font-semibold tracking-wide">
-                    Available for Remote Roles
-                  </span>
+          <div className="md:col-span-5 flex justify-center md:justify-end">
+            <figure className="w-full max-w-sm">
+              <div className="relative mr-4 mb-4">
+                <div className="absolute inset-0 translate-x-4 translate-y-4 border-2 border-signal" aria-hidden />
+                <div className="relative aspect-[4/5] bg-paperDeep border border-char overflow-hidden">
+                  <Image
+                    src={safeUrl(p.avatar) || '/images/kazi-tamim.jpg'}
+                    alt={`${p.name}${p.title ? `, ${p.title}` : ''}`}
+                    fill
+                    priority
+                    sizes="(min-width: 768px) 380px, 90vw"
+                    className="object-cover"
+                  />
                 </div>
+                <span className="absolute -left-3 bottom-8 bg-signal text-white font-mono text-[11px] uppercase tracking-[0.16em] px-3 py-2">
+                  QA · Automation
+                </span>
               </div>
-
-              {/* Name, Role & Location Header */}
-              <div className="space-y-1">
-                <h2 className="font-display font-extrabold text-2xl text-ink tracking-tight">
-                  {p.name || 'Kazi Khalid Hasan Tamim'}
-                </h2>
-                <p className="font-mono text-xs sm:text-sm font-semibold text-emeraldSolid">
-                  QA &amp; Test Automation Engineer | SDET
-                </p>
-              </div>
-
-              {/* Dynamic Current Company Work Information */}
-              {currentExp && (
-                <div className="p-4 rounded-xl bg-canvas border border-borderLight space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      <span className="font-mono text-[11px] font-bold text-emeraldSolid uppercase tracking-wider">
-                        CURRENT ROLE
-                      </span>
-                    </div>
-                    <span className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-surface border border-borderLight text-inkMuted">
-                      {currentExp.period || 'Present'}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="font-display font-bold text-base text-ink">
-                      {currentExp.role}
-                    </h3>
-                    <div className="text-xs font-semibold text-inkMuted mt-0.5 flex items-center gap-1.5 flex-wrap">
-                      <span className="text-emeraldSolid font-bold">@ {currentExp.company}</span>
-                      <span>•</span>
-                      <span>{currentExp.type || 'Full-Time (Remote)'}</span>
-                      {currentExp.location && (
-                        <>
-                          <span>•</span>
-                          <span>{currentExp.location}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {currentExp.highlights && currentExp.highlights.length > 0 && (
-                    <ul className="space-y-1 pt-1.5 border-t border-borderLight">
-                      {currentExp.highlights.slice(0, 2).map((h: string, idx: number) => (
-                        <li key={idx} className="flex items-start gap-1.5 text-xs text-inkMuted leading-relaxed">
-                          <span className="text-emeraldSolid font-bold mt-0.5">✓</span>
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {currentExp.techStack && currentExp.techStack.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-2 border-t border-borderLight">
-                      {currentExp.techStack.map((tech: string) => (
-                        <span key={tech} className="font-mono text-[10px] px-2 py-0.5 rounded bg-surface border border-borderLight text-ink font-semibold">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Location & Availability Quick Row */}
-              <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
-                <div className="p-2.5 rounded-lg bg-surface border border-borderLight">
-                  <span className="text-[10px] uppercase text-inkSubtle block">Location</span>
-                  <span className="font-semibold text-ink truncate block">{p.location || 'Dhaka, Bangladesh'}</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-surface border border-borderLight">
-                  <span className="text-[10px] uppercase text-inkSubtle block">Availability</span>
-                  <span className="font-semibold text-emeraldSolid truncate block">Remote Worldwide</span>
-                </div>
-              </div>
-
-            </div>
+              <figcaption className="mt-5 font-mono text-xs text-mute lowercase text-balance">
+                always breaking things, so you don&apos;t have to.
+              </figcaption>
+            </figure>
           </div>
-
         </div>
 
+        {metrics.length > 0 && (
+          <dl className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-px bg-rule border-t border-char">
+            {metrics.map(([key, value], i) => (
+              <div
+                key={key}
+                className={`bg-paper py-6 md:py-8 pr-4 ${
+                  i === 0 ? 'pl-0' : i === 2 ? 'pl-0 md:pl-6' : 'pl-4 md:pl-6'
+                }`}
+              >
+                <dd className="font-serif text-5xl md:text-6xl text-char leading-none">{String(value)}</dd>
+                <dt className="mt-3 font-mono text-xs uppercase tracking-[0.14em] text-mute">
+                  {metricLabels[key]}
+                </dt>
+              </div>
+            ))}
+          </dl>
+        )}
       </div>
     </section>
   );

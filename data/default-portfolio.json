@@ -2,9 +2,9 @@
   "profile": {
     "name": "Kazi Khalid Hasan Tamim",
     "shortName": "Kazi Tamim",
-    "title": "QA & Test Automation Engineer | SDET",
-    "tagline": "Building fast, reliable test automation frameworks & CI/CD quality pipelines.",
-    "bio": "QA & Test Automation Engineer with 3+ years of experience optimizing test suites for web, mobile, and API microservices. Specializing in Playwright, Cypress, Selenium, and Dockerized CI/CD pipelines to guarantee zero-defect production releases.",
+    "title": "QA & Automation Engineer",
+    "tagline": "I break software on purpose, so your users never find the bugs first.",
+    "bio": "QA engineer who starts with hands-on manual testing and automates what is worth automating. 3+ years across SaaS products: lead-generation automation, business management and fleet software, with Playwright, Cypress and API suites running in CI. I also ship two products of my own, a website auditor and an API security tester.",
     "email": "kazikhalid757@gmail.com",
     "phone": "+8801580338155",
     "location": "Mirpur-2, Dhaka - 1216, Bangladesh",
@@ -14,19 +14,74 @@
     "availabilityStatus": "Available for Full-time Roles & Contracts",
     "metrics": {
       "yearsExperience": "3+",
-      "automatedTestsExecuted": "18,500+",
-      "pipelinePassRate": "99.8%",
-      "bugsCaughtPreProd": "480+"
+      "saasProducts": "5",
+      "automationRepos": "10",
+      "googleVrpAwards": "2"
     },
     "socials": {
       "linkedin": "https://www.linkedin.com/in/kazi-khalid-hasan-tamim-bba115220/",
       "github": "https://github.com/kazikhalid757",
       "upwork": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share",
-      "bughunters": "https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759",
-      "kaggle": "https://www.kaggle.com/kazikhalid757"
+      "bughunters": "https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759"
+    },
+    "siteUrl": "",
+    "seo": {
+      "title": "Kazi Khalid Hasan Tamim | QA Automation Engineer & SDET",
+      "description": "Kazi Khalid Hasan Tamim (Kazi Tamim): QA & test automation engineer in Dhaka. Manual testing, Playwright, Cypress, Selenium, API testing, CI/CD.",
+      "keywords": [
+        "Kazi Khalid Hasan Tamim",
+        "Kazi Tamim",
+        "QA engineer",
+        "QA automation engineer",
+        "SDET",
+        "software tester",
+        "test automation engineer",
+        "manual testing",
+        "exploratory testing",
+        "regression testing",
+        "test automation",
+        "Playwright",
+        "Cypress",
+        "Selenium",
+        "Selenium Grid",
+        "Appium",
+        "Robot Framework",
+        "REST Assured",
+        "Postman",
+        "API testing",
+        "Karate DSL",
+        "JMeter",
+        "performance testing",
+        "load testing",
+        "CI/CD testing",
+        "GitHub Actions",
+        "Jenkins",
+        "Docker",
+        "JIRA",
+        "bug reporting",
+        "security testing",
+        "SaaS testing",
+        "QA engineer Bangladesh",
+        "QA engineer Dhaka",
+        "hire QA engineer",
+        "freelance QA engineer"
+      ]
     }
   },
   "services": [
+    {
+      "id": "srv-4",
+      "title": "Manual QA & Security Testing",
+      "icon": "CheckSquare",
+      "summary": "Thorough exploratory testing, test planning, and verified vulnerability reporting.",
+      "deliverables": [
+        "Detailed test plans & traceability matrices",
+        "JIRA defect reporting with root-cause analysis",
+        "Smoke, regression & sanity test cycles",
+        "Google Bug Hunters recognized researcher"
+      ],
+      "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
+    },
     {
       "id": "srv-1",
       "title": "Web Test Automation",
@@ -65,76 +120,209 @@
         "Slack & Discord build alert integrations"
       ],
       "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
-    },
-    {
-      "id": "srv-4",
-      "title": "Manual QA & Security",
-      "icon": "CheckSquare",
-      "summary": "Thorough exploratory testing, test planning, and verified vulnerability reporting.",
-      "deliverables": [
-        "Detailed test plans & traceability matrices",
-        "JIRA defect reporting with root-cause analysis",
-        "Smoke, regression & sanity test cycles",
-        "Google Bug Hunters recognized researcher"
-      ],
-      "hireUrl": "https://www.upwork.com/freelancers/~01ece4f0a9bea27e31?mp_source=share"
     }
   ],
   "skills": [
     {
+      "category": "Manual Testing",
+      "items": [
+        {
+          "name": "Test plans & test case design",
+          "level": 90,
+          "icon": "CheckSquare",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Exploratory testing",
+          "level": 90,
+          "icon": "CheckSquare",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Smoke, sanity & regression",
+          "level": 92,
+          "icon": "CheckSquare",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Bug reporting & triage in JIRA",
+          "level": 92,
+          "icon": "CheckSquare",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Mobile testing (Android & iOS)",
+          "level": 88,
+          "icon": "Smartphone",
+          "experience": "2 yrs"
+        },
+        {
+          "name": "UAT & traceability matrices",
+          "level": 85,
+          "icon": "CheckSquare",
+          "experience": "2 yrs"
+        }
+      ]
+    },
+    {
       "category": "Test Automation",
       "items": [
-        { "name": "Playwright", "level": 95, "icon": "Terminal", "experience": "3 yrs" },
-        { "name": "Cypress", "level": 92, "icon": "Code2", "experience": "3 yrs" },
-        { "name": "Selenium WebDriver & Grid", "level": 90, "icon": "Globe", "experience": "3 yrs" },
-        { "name": "Robot Framework", "level": 85, "icon": "Bot", "experience": "2 yrs" },
-        { "name": "Appium Mobile", "level": 82, "icon": "Smartphone", "experience": "2 yrs" }
+        {
+          "name": "Playwright",
+          "level": 95,
+          "icon": "Terminal",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Cypress",
+          "level": 92,
+          "icon": "Code2",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Selenium WebDriver & Grid",
+          "level": 90,
+          "icon": "Globe",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Robot Framework",
+          "level": 85,
+          "icon": "Bot",
+          "experience": "2 yrs"
+        },
+        {
+          "name": "Appium Mobile",
+          "level": 82,
+          "icon": "Smartphone",
+          "experience": "2 yrs"
+        }
       ]
     },
     {
       "category": "API & Performance",
       "items": [
-        { "name": "Postman & Newman CLI", "level": 94, "icon": "Send", "experience": "3 yrs" },
-        { "name": "REST Assured", "level": 90, "icon": "Server", "experience": "2.5 yrs" },
-        { "name": "Apache JMeter", "level": 88, "icon": "Activity", "experience": "2 yrs" },
-        { "name": "Swagger / OpenAPI", "level": 90, "icon": "CheckCircle2", "experience": "3 yrs" },
-        { "name": "Karate DSL", "level": 86, "icon": "ShieldAlert", "experience": "2 yrs" }
+        {
+          "name": "Postman & Newman CLI",
+          "level": 94,
+          "icon": "Send",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "REST Assured",
+          "level": 90,
+          "icon": "Server",
+          "experience": "2.5 yrs"
+        },
+        {
+          "name": "Apache JMeter",
+          "level": 88,
+          "icon": "Activity",
+          "experience": "2 yrs"
+        },
+        {
+          "name": "Swagger / OpenAPI",
+          "level": 90,
+          "icon": "CheckCircle2",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Karate DSL",
+          "level": 86,
+          "icon": "ShieldAlert",
+          "experience": "2 yrs"
+        }
       ]
     },
     {
       "category": "DevOps & Cloud",
       "items": [
-        { "name": "GitHub Actions", "level": 92, "icon": "GitFork", "experience": "3 yrs" },
-        { "name": "Docker & Compose", "level": 88, "icon": "Box", "experience": "2 yrs" },
-        { "name": "Jenkins Pipelines", "level": 85, "icon": "Sliders", "experience": "2 yrs" },
-        { "name": "Git & GitLab", "level": 94, "icon": "GitPullRequest", "experience": "3 yrs" },
-        { "name": "AWS Cloud", "level": 78, "icon": "Cloud", "experience": "1.5 yrs" }
+        {
+          "name": "GitHub Actions",
+          "level": 92,
+          "icon": "GitFork",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Docker & Compose",
+          "level": 88,
+          "icon": "Box",
+          "experience": "2 yrs"
+        },
+        {
+          "name": "Jenkins Pipelines",
+          "level": 85,
+          "icon": "Sliders",
+          "experience": "2 yrs"
+        },
+        {
+          "name": "Git & GitLab",
+          "level": 94,
+          "icon": "GitPullRequest",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "AWS Cloud",
+          "level": 78,
+          "icon": "Cloud",
+          "experience": "1.5 yrs"
+        }
       ]
     },
     {
       "category": "Programming Languages",
       "items": [
-        { "name": "Python", "level": 95, "icon": "Binary", "experience": "3 yrs" },
-        { "name": "Java", "level": 88, "icon": "Coffee", "experience": "2.5 yrs" },
-        { "name": "JavaScript / TypeScript", "level": 88, "icon": "Braces", "experience": "3 yrs" },
-        { "name": "SQL", "level": 84, "icon": "Database", "experience": "2.5 yrs" }
+        {
+          "name": "Python",
+          "level": 95,
+          "icon": "Binary",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "Java",
+          "level": 88,
+          "icon": "Coffee",
+          "experience": "2.5 yrs"
+        },
+        {
+          "name": "JavaScript / TypeScript",
+          "level": 88,
+          "icon": "Braces",
+          "experience": "3 yrs"
+        },
+        {
+          "name": "SQL",
+          "level": 84,
+          "icon": "Database",
+          "experience": "2.5 yrs"
+        }
       ]
     }
   ],
   "experiences": [
     {
       "id": "exp-1",
-      "role": "Jr SQA & Project Coordinator",
+      "role": "QA Engineer & Project Coordinator",
       "company": "SoftStandard Solutions",
       "location": "Dhaka, Bangladesh",
       "period": "Sep 2025 – Present",
       "type": "Full-Time (Remote)",
       "highlights": [
-        "Leading QA automation workflows, cutting manual regression time by 60%.",
-        "Built automated GitHub Actions quality gates blocking merges on test failure.",
-        "Coordinated release planning, defect triage, and automated HTML reporting."
+        "Manual testing of Oppora.ai: test cases, exploratory and regression cycles across lead finder, sequences and CRM sync.",
+        "Automated the stable flows and added GitHub Actions quality gates that block merges when tests fail.",
+        "Run release planning, defect triage and automated HTML reporting with the dev team."
       ],
-      "techStack": ["Playwright", "Python", "Postman", "GitHub Actions", "JIRA", "Docker"]
+      "techStack": [
+        "Manual Testing",
+        "Playwright",
+        "Python",
+        "Postman",
+        "GitHub Actions",
+        "JIRA",
+        "Docker"
+      ],
+      "summary": "QA and test automation for Oppora.ai, an AI platform that automates B2B lead generation and outreach.",
+      "product": "Oppora.ai"
     },
     {
       "id": "exp-2",
@@ -144,11 +332,21 @@
       "period": "Sep 2024 – Jul 2025",
       "type": "Full-Time (Remote)",
       "highlights": [
-        "Architected end-to-end Cypress & Selenium Grid test automation suites.",
-        "Integrated automated API regression runs with REST Assured into Jenkins pipelines.",
-        "Created cross-browser test matrices across Chrome, Firefox, Safari, and Edge."
+        "Manual and exploratory testing of the smart car management SaaS: test cases, smoke and regression cycles, JIRA defect reports.",
+        "Built Cypress and Selenium Grid suites for the stable flows and wired REST Assured API regression into Jenkins.",
+        "Maintained a cross-browser matrix across Chrome, Firefox, Safari and Edge."
       ],
-      "techStack": ["Cypress", "Selenium Grid", "REST Assured", "Jenkins", "AWS", "JIRA"]
+      "techStack": [
+        "Manual Testing",
+        "Cypress",
+        "Selenium Grid",
+        "REST Assured",
+        "Jenkins",
+        "AWS",
+        "JIRA"
+      ],
+      "summary": "QA and automation for a smart car management SaaS.",
+      "product": "Smart car management SaaS"
     },
     {
       "id": "exp-3",
@@ -158,11 +356,19 @@
       "period": "Nov 2023 – Apr 2024",
       "type": "Contract (Remote)",
       "highlights": [
-        "Tested retail ERP and POS mobile applications across Android and iOS devices.",
-        "Discovered and logged 120+ high-severity defects with reproducible steps.",
-        "Collaborated daily with engineering squads in two-week Agile sprints."
+        "Manual testing of the Hishabee SaaS platform: POS, inventory and ERP flows on web, Android and iOS.",
+        "Found and logged 120+ high-severity defects with reproducible steps.",
+        "Worked daily with engineering squads in two-week Agile sprints."
       ],
-      "techStack": ["Manual Testing", "Robot Framework", "Postman", "Android ADB", "JIRA"]
+      "techStack": [
+        "Manual Testing",
+        "Robot Framework",
+        "Postman",
+        "Android ADB",
+        "JIRA"
+      ],
+      "summary": "QA on a SaaS business-management product for small and micro businesses in Bangladesh.",
+      "product": "Hishabee"
     }
   ],
   "projects": [
@@ -173,7 +379,13 @@
       "featured": true,
       "description": "Selenium web automation suite integrated with headless Docker containers and automated Jenkins CI/CD pipeline.",
       "metrics": "65% faster builds | 100% automated triggers",
-      "tags": ["Selenium", "Docker", "Jenkins", "Java", "CI/CD"],
+      "tags": [
+        "Selenium",
+        "Docker",
+        "Jenkins",
+        "Java",
+        "CI/CD"
+      ],
       "github": "https://github.com/kazikhalid757/Web-Automation-with-Docker-Jenkins-Pipeline",
       "liveDemo": "",
       "image": "/images/1.png"
@@ -185,7 +397,12 @@
       "featured": true,
       "description": "Modern Playwright automation suite featuring auto-waiting, network mocking, and parallel cross-browser execution.",
       "metrics": "3.2s average suite execution | 0% flaky tests",
-      "tags": ["Playwright", "JavaScript", "E2E Testing", "Parallel Execution"],
+      "tags": [
+        "Playwright",
+        "JavaScript",
+        "E2E Testing",
+        "Parallel Execution"
+      ],
       "github": "https://github.com/kazikhalid757/Palywrite-web-automation-with-js",
       "liveDemo": "",
       "image": "/images/3.png"
@@ -197,7 +414,12 @@
       "featured": true,
       "description": "Cypress automation testing framework running headlessly in GitHub Actions with automatic video artifact generation.",
       "metrics": "Zero-defect merge gate | Automated PR checks",
-      "tags": ["Cypress", "GitHub Actions", "CI/CD", "JavaScript"],
+      "tags": [
+        "Cypress",
+        "GitHub Actions",
+        "CI/CD",
+        "JavaScript"
+      ],
       "github": "https://github.com/kazikhalid757/Web-Automation-using-Cypress-with-GitActions",
       "liveDemo": "",
       "image": "/images/2.png"
@@ -209,7 +431,12 @@
       "featured": true,
       "description": "Backend API test suite asserting JSON schemas, authentication tokens, status codes, and latency SLA limits in CI.",
       "metrics": "140+ endpoints verified | Sub-second runs",
-      "tags": ["REST Assured", "Java", "GitHub Actions", "API Testing"],
+      "tags": [
+        "REST Assured",
+        "Java",
+        "GitHub Actions",
+        "API Testing"
+      ],
       "github": "https://github.com/kazikhalid757/API-testing-restassured-github-actions",
       "liveDemo": "",
       "image": "/images/4.jpg"
@@ -221,7 +448,12 @@
       "featured": false,
       "description": "Distributed test infrastructure scaling Selenium Hub and Node containers to run concurrent multi-browser tests.",
       "metrics": "4x parallel throughput | Cross-browser parity",
-      "tags": ["Selenium Grid", "Docker", "Java", "TestNG"],
+      "tags": [
+        "Selenium Grid",
+        "Docker",
+        "Java",
+        "TestNG"
+      ],
       "github": "https://github.com/kazikhalid757/Web-Automation-With-Selenium-Grid",
       "liveDemo": "",
       "image": "/images/5.jpg"
@@ -233,7 +465,12 @@
       "featured": false,
       "description": "Keyword-driven mobile application automation framework using Robot Framework and Appium for Android.",
       "metrics": "85+ critical mobile scenarios covered",
-      "tags": ["Robot Framework", "Appium", "Android", "Python"],
+      "tags": [
+        "Robot Framework",
+        "Appium",
+        "Android",
+        "Python"
+      ],
       "github": "https://github.com/kazikhalid757/Android-App-Automation-Robot-Framework-",
       "liveDemo": "",
       "image": "/images/6.png"
@@ -245,7 +482,12 @@
       "featured": false,
       "description": "BDD-style API automation framework leveraging Karate DSL for unified HTTP and JSON validation.",
       "metrics": "Human-readable Gherkin specs | Complete CRUD",
-      "tags": ["Karate DSL", "Cucumber BDD", "API Testing", "Java"],
+      "tags": [
+        "Karate DSL",
+        "Cucumber BDD",
+        "API Testing",
+        "Java"
+      ],
       "github": "https://github.com/kazikhalid757/Karate-DSL-API-Testing",
       "liveDemo": "",
       "image": "/images/1.png"
@@ -257,7 +499,11 @@
       "featured": false,
       "description": "Performance profiling suite using Apache JMeter simulating concurrent users to measure latency and throughput.",
       "metrics": "Tested up to 5,000 concurrent threads",
-      "tags": ["Apache JMeter", "Performance Testing", "Stress Testing"],
+      "tags": [
+        "Apache JMeter",
+        "Performance Testing",
+        "Stress Testing"
+      ],
       "github": "https://github.com/kazikhalid757/Load-testing-using-Apache-JMeter",
       "liveDemo": "",
       "image": "/images/3.png"
@@ -269,7 +515,13 @@
       "featured": false,
       "description": "Deployment pipeline deploying containerized web applications onto AWS cloud infrastructure with health checks.",
       "metrics": "Automated rollback on failed health check",
-      "tags": ["AWS", "Docker", "Jenkins", "CI/CD", "DevOps"],
+      "tags": [
+        "AWS",
+        "Docker",
+        "Jenkins",
+        "CI/CD",
+        "DevOps"
+      ],
       "github": "https://github.com/kazikhalid757/AWS-Web-Server-CI-CD-Pipeline",
       "liveDemo": "",
       "image": "/images/4.jpg"
@@ -281,7 +533,12 @@
       "featured": false,
       "description": "Multi-stage Docker builds configured for minimal attack surfaces and reliable test environments.",
       "metrics": "70% smaller image footprints",
-      "tags": ["Docker", "Linux", "DevOps", "Infrastructure"],
+      "tags": [
+        "Docker",
+        "Linux",
+        "DevOps",
+        "Infrastructure"
+      ],
       "github": "https://github.com/kazikhalid757/AWS-Web-Server-CI-CD-Pipeline",
       "liveDemo": "",
       "image": "/images/2.png"
@@ -310,24 +567,27 @@
   "certifications": [
     {
       "id": "cert-1",
-      "title": "IBM Data Science Professional Certificate",
-      "issuer": "IBM via Coursera",
-      "image": "/images/ibm.jpg",
-      "verifyUrl": "https://www.coursera.org/account/accomplishments/specialization/certificate/6BTALFEMBEH3"
+      "title": "Databases and SQL for Data Science with Python (with Honors)",
+      "issuer": "Coursera",
+      "date": "Jan 2023",
+      "image": "",
+      "skills": [
+        "SQL",
+        "SQL Database Administration"
+      ],
+      "verifyUrl": "https://www.coursera.org/account/accomplishments/certificate/GDMSUMLRVEUK"
     },
     {
       "id": "cert-2",
-      "title": "Google Data Analytics Professional Certificate",
-      "issuer": "Google via Coursera",
-      "image": "/images/google.jpg",
-      "verifyUrl": "https://www.coursera.org/account/accomplishments/specialization/certificate/258DL78Q938L"
-    },
-    {
-      "id": "cert-3",
-      "title": "Data Visualization with Tableau",
-      "issuer": "UC Davis via Coursera",
-      "image": "/images/tebleau.jpg",
-      "verifyUrl": "https://www.coursera.org/account/accomplishments/specialization/certificate/EUREW966Q7UF"
+      "title": "Problem Solving (Basic) Certificate (Python)",
+      "issuer": "HackerRank",
+      "date": "Jan 2023",
+      "image": "",
+      "skills": [
+        "Object-Oriented Programming",
+        "Critical Thinking"
+      ],
+      "verifyUrl": "https://www.hackerrank.com/certificates/ab45ce5fbb89"
     }
   ],
   "interactiveTestSuites": [
@@ -399,19 +659,111 @@
       "passRate": "100%"
     }
   ],
-  "messages": [
+  "products": [
     {
-      "id": "msg-1792235930928",
-      "name": "QA Lead Recruiter",
-      "email": "lead@example.com",
-      "subject": "Interview Request",
-      "message": "Great portfolio!",
-      "date": "2026-10-17T11:18:50.928Z",
-      "read": false
+      "id": "prod-1",
+      "kind": "Built by me",
+      "name": "BugViso",
+      "url": "https://bugviso.com",
+      "tagline": "Free website audit. Find every bug. Ship every fix.",
+      "role": "Full-stack founder",
+      "problem": "Audits tell you what is broken but rarely how to fix it, and agencies lose hours turning reports into client work.",
+      "built": "A website auditor that runs 25 engines in a real browser (SEO, AI search readiness, performance, security, accessibility), then writes the code fixes and a branded PDF.",
+      "stats": [
+        "25 audit engines",
+        "74 checks per page",
+        "5 AI engines tracked",
+        "White-label PDF reports"
+      ],
+      "stack": [
+        "Playwright",
+        "Chromium",
+        "Redis queue",
+        "LLM fix generation"
+      ]
+    },
+    {
+      "id": "prod-2",
+      "kind": "Built by me",
+      "name": "RoleRival",
+      "url": "https://rolerival.com",
+      "tagline": "Test your API against its own users.",
+      "role": "Full-stack founder",
+      "problem": "Most API bugs that matter are authorization bugs: one role reaching what only another role should see.",
+      "built": "An API security automation tool that exercises your endpoints as different users and roles, so broken access control is caught before release.",
+      "stats": [
+        "Role-based API testing",
+        "Broken access control focus"
+      ],
+      "stack": [
+        "API security",
+        "Automation",
+        "Authorization testing"
+      ]
+    },
+    {
+      "id": "prod-3",
+      "kind": "QA on the team",
+      "name": "Oppora.ai",
+      "url": "https://oppora.ai",
+      "tagline": "Reach out to decision makers on autopilot.",
+      "role": "QA & automation, SoftStandard Solutions",
+      "problem": "An AI sales agent that finds leads, emails them and syncs to a CRM has many moving parts that must all work together.",
+      "built": "I test the lead pipeline end to end, by hand first and then automated: lead and company finder, enrichment, multichannel email sequences, AI replies and HubSpot / Zoho sync.",
+      "stats": [
+        "60M+ companies in the database",
+        "Multichannel sequences",
+        "Two-way CRM sync",
+        "REST API and MCP server"
+      ],
+      "stack": [
+        "Manual testing",
+        "Playwright",
+        "Python",
+        "Postman",
+        "GitHub Actions"
+      ]
+    },
+    {
+      "id": "prod-4",
+      "kind": "QA on the team",
+      "name": "Smart Car Management SaaS",
+      "url": "",
+      "tagline": "Fleet and vehicle management in the cloud.",
+      "role": "QA & test automation, After20Solutions",
+      "problem": "Fleet software handles vehicles, drivers and live data, so regressions show up as wrong data on a customer's dashboard.",
+      "built": "I test it by hand first with test cases and exploratory runs, then automate the stable flows with Cypress, Selenium Grid and REST Assured API regression that gates every release.",
+      "stats": [
+        "4 browsers covered",
+        "API regression in Jenkins CI"
+      ],
+      "stack": [
+        "Manual testing",
+        "Cypress",
+        "Selenium Grid",
+        "REST Assured",
+        "Jenkins"
+      ]
+    },
+    {
+      "id": "prod-5",
+      "kind": "QA on the team",
+      "name": "Hishabee",
+      "url": "https://hishabee.business",
+      "tagline": "Business management for small and micro businesses.",
+      "role": "SQA Engineer, Hishabee",
+      "problem": "Shop owners rely on the app for daily sales and stock, so a wrong total or a broken sync costs real money.",
+      "built": "I tested POS, inventory and ERP flows by hand across Android, iOS and web, and logged 120+ high-severity defects with clear repro steps.",
+      "stats": [
+        "120+ high-severity defects logged",
+        "Android, iOS and web"
+      ],
+      "stack": [
+        "Manual testing",
+        "Robot Framework",
+        "Postman",
+        "ADB"
+      ]
     }
-  ],
-  "adminSettings": {
-    "adminPin": "admin123",
-    "lastBackup": "2026-10-17T19:00:00.000Z"
-  }
+  ]
 }

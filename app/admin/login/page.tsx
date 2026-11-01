@@ -1,216 +1,132 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { 
-  Lock, 
-  KeyRound, 
-  ArrowRight, 
-  Bug, 
-  ShieldCheck, 
-  AlertCircle,
-  ArrowLeft
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, Eye, EyeOff, Lock } from 'lucide-react';
+import { ADMIN_BASE } from '@/lib/adminPath';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
+  const [show, setShow] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [info, setInfo] = useState<{ configured: boolean; devDefault: boolean } | null>(null);
+  const [expired, setExpired] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  useEffect(() => {
+    setExpired(new URLSearchParams(window.location.search).has('expired'));
+    fetch('/api/auth')
+      .then((r) => r.json())
+      .then(setInfo)
+      .catch(() => {});
+  }, []);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBusy(true);
     setError('');
-    setLoading(true);
-
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ password }),
       });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        router.push('/admin');
-      } else {
-        setError(data.error || 'Invalid administrator security PIN');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(json.error || 'Sign-in failed.');
+        setBusy(false);
+        return;
       }
+      // Only ever send people to another admin page.
+      const next = new URLSearchParams(window.location.search).get('next');
+      window.location.href = next && (next === ADMIN_BASE || next.startsWith(ADMIN_BASE + '/')) ? next : ADMIN_BASE;
     } catch {
-      setError('An error occurred during authentication. Please retry.');
-    } finally {
-      setLoading(false);
+      setError('Could not reach the server. Check your connection and try again.');
+      setBusy(false);
     }
   };
 
-  const autofillDemoPin = () => {
-    setPassword('admin123');
-  };
-
   return (
-    <div 
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f8fafc',
-        padding: '1.5rem',
-        position: 'relative'
-      }}
-    >
-      <div 
-        className="spec-card"
-        style={{
-          maxWidth: '440px',
-          width: '100%',
-          padding: '2.5rem',
-          backgroundColor: '#ffffff',
-          boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)'
-        }}
-      >
-        {/* Brand Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div 
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '12px',
-              backgroundColor: '#0f172a',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#ffffff',
-              margin: '0 auto 1.25rem auto'
-            }}
-          >
-            <Bug size={26} />
+    <main className="min-h-screen bg-paper text-char grid place-items-center px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="mb-8 flex items-center gap-3">
+          <span className="grid place-items-center w-11 h-11 bg-char text-paper" aria-hidden>
+            <Lock size={20} />
+          </span>
+          <div className="leading-none">
+            <p className="font-serif text-3xl">Admin</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">Portfolio CMS</p>
           </div>
-
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-            <span className="tech-stamp tech-stamp-emerald">
-              QA CONTROL SYSTEM
-            </span>
-            <span className="tech-stamp tech-stamp-slate">
-              AUTH GATE
-            </span>
-          </div>
-
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.35rem' }}>
-            Portfolio Admin CMS
-          </h1>
-
-          <p style={{ fontSize: '0.88rem', color: '#64748b' }}>
-            Enter your master security PIN to configure portfolio data and inspect verified submissions.
-          </p>
         </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div 
-            style={{
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              color: '#991b1b',
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              fontSize: '0.86rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              marginBottom: '1.5rem'
-            }}
-          >
-            <AlertCircle size={16} style={{ flexShrink: 0 }} />
-            <span>{error}</span>
-          </div>
-        )}
+        <form onSubmit={submit} className="bg-white border border-char shadow-[8px_8px_0_0_#121212] p-6 md:p-8">
+          <h1 className="font-serif font-normal text-4xl leading-tight text-char">Sign in</h1>
+          <p className="mt-2 text-sm text-mute">Enter the admin password to edit your portfolio.</p>
+          {expired && (
+            <p role="status" className="mt-4 border-l-4 border-char bg-paperDeep px-3 py-2 text-sm text-charSoft">
+              Your session ended, so please sign in again.
+            </p>
+          )}
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-              <label className="form-label">Master Security PIN</label>
-              <button 
-                type="button" 
-                onClick={autofillDemoPin}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#059669',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  textDecoration: 'underline'
-                }}
-              >
-                Autofill default (admin123)
-              </button>
-            </div>
-
-            <div style={{ position: 'relative' }}>
-              <input
-                type="password"
-                required
-                autoFocus
-                placeholder="Enter admin password..."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-input"
-                style={{ paddingRight: '2.5rem' }}
-              />
-              <KeyRound 
-                size={16} 
-                style={{ 
-                  position: 'absolute', 
-                  right: '12px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  color: '#94a3b8' 
-                }} 
-              />
-            </div>
+          <label htmlFor="password" className="mt-6 block text-sm font-semibold text-char">
+            Password
+          </label>
+          <div className="relative mt-1.5">
+            <input
+              id="password"
+              type={show ? 'text' : 'password'}
+              autoFocus
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={!!error}
+              aria-describedby={error ? 'login-error' : undefined}
+              className="w-full h-12 pl-3 pr-12 bg-white border border-char/40 text-char focus:outline-none focus:border-signal focus:ring-2 focus:ring-signal/25"
+            />
+            <button
+              type="button"
+              onClick={() => setShow((s) => !s)}
+              aria-label={show ? 'Hide password' : 'Show password'}
+              className="absolute inset-y-0 right-0 w-12 grid place-items-center text-mute hover:text-char"
+            >
+              {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
+
+          {error && (
+            <p id="login-error" role="alert" className="mt-3 border-l-4 border-signal bg-paper px-3 py-2 text-sm font-medium text-char">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
-            disabled={loading}
-            className="btn btn-primary btn-lg"
-            style={{ width: '100%', justifyContent: 'center', marginTop: '1.25rem' }}
+            disabled={busy || !password}
+            className="mt-6 w-full h-12 inline-flex items-center justify-center gap-2 bg-char text-paper font-medium hover:bg-signal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? (
-              <span>Authenticating...</span>
-            ) : (
-              <>
-                <span>Access Admin Control</span>
-                <ArrowRight size={16} />
-              </>
-            )}
+            {busy ? 'Signing in…' : 'Sign in'} {!busy && <ArrowRight size={16} aria-hidden />}
           </button>
         </form>
 
-        {/* Back Link */}
-        <div style={{ textAlign: 'center', marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid #f1f5f9' }}>
-          <Link 
-            href="/"
-            style={{
-              fontSize: '0.85rem',
-              color: '#64748b',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontWeight: 600,
-              transition: 'color 0.15s ease'
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#0f172a')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#64748b')}
-          >
-            <ArrowLeft size={14} />
-            <span>Return to Public Portfolio</span>
-          </Link>
-        </div>
+        {info && !info.configured && (
+          <p className="mt-6 border-l-4 border-signal bg-white px-4 py-3 text-sm text-charSoft">
+            <strong className="text-char">Login is not set up.</strong> Add an <code className="font-mono text-xs">ADMIN_PASSWORD</code>{' '}
+            environment variable (Vercel: Project Settings, Environment Variables), then redeploy.
+          </p>
+        )}
+        {info?.devDefault && (
+          <p className="mt-6 border-l-4 border-char bg-paperDeep px-4 py-3 text-sm text-charSoft">
+            Development mode: no <code className="font-mono text-xs">ADMIN_PASSWORD</code> is set, so the temporary password{' '}
+            <code className="font-mono text-xs">admin123</code> works. This fallback is disabled in production.
+          </p>
+        )}
+
+        <p className="mt-8 text-center text-sm">
+          <a href="/" className="text-mute underline underline-offset-4 decoration-rule hover:text-char">
+            ← Back to the website
+          </a>
+        </p>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,130 +1,102 @@
-'use client';
-
 import React from 'react';
-import { 
-  Trophy, 
-  ExternalLink, 
-  Award,
-  ShieldCheck,
-  CheckCircle2
-} from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import SectionHead from './SectionHead';
+import { safeUrl } from '@/lib/safeUrl';
+import type { Award, Certification } from '@/lib/schemas';
 
-interface AwardsProps {
-  awards?: any[];
-  certifications?: any[];
+interface AwardsCertificationsProps {
+  awards?: Award[];
+  certifications?: Certification[];
 }
 
-export default function AwardsCertifications({ awards }: AwardsProps) {
-  const allAwards = [
-    {
-      id: 'vrp-hof',
-      title: 'Google Vulnerability Reward Program (VRP)',
-      issuer: 'Google Security Team',
-      badge: 'HALL OF FAME',
-      description: 'Recognized in the Google Bug Hunters Hall of Fame as an Independent Security Researcher for reporting verified vulnerabilities.',
-      verifyUrl: 'https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759',
-      badgeClass: 'bg-blueSurface border-blueBorder text-[#1D4ED8]'
-    },
-    {
-      id: 'award-snake',
-      title: 'Snake Achievement Award',
-      issuer: 'Google Bug Hunters',
-      badge: 'GOOGLE VRP',
-      description: 'Awarded by Google Security for discovering and responsibly reporting verified web and API security vulnerabilities.',
-      verifyUrl: 'https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759',
-      badgeClass: 'bg-blueSurface border-blueBorder text-[#1D4ED8]'
-    },
-    {
-      id: 'award-first',
-      title: 'First Report Submitted Award',
-      issuer: 'Google Bug Hunters',
-      badge: 'VERIFIED DISCLOSURE',
-      description: 'Successfully submitted and verified bug report to Google\'s Vulnerability Reward Program.',
-      verifyUrl: 'https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759',
-      badgeClass: 'bg-blueSurface border-blueBorder text-[#1D4ED8]'
-    }
-  ];
+export default function AwardsCertifications({ awards, certifications }: AwardsCertificationsProps) {
+  const a = awards || [];
+  const c = certifications || [];
+  if (a.length === 0 && c.length === 0) return null;
 
   return (
-    <section id="awards" className="scroll-mt-24 pt-4 pb-12">
-      {/* Anchor alias for #credentials */}
-      <span id="credentials" className="sr-only">Awards</span>
+    <section id="recognition" className="scroll-mt-20 bg-paperDeep border-y border-rule">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 md:py-28">
+        <SectionHead
+          index="06"
+          eyebrow="Recognition"
+          title={
+            <>
+              Bugs that <span className="italic">Google</span> said thanks for.
+            </>
+          }
+        />
 
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        
-        {/* Main Awards Container */}
-        <div className="bg-surface border border-borderLight rounded-xl p-6 sm:p-8 space-y-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
-                <Trophy className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="font-mono text-xs font-bold text-amber-600 uppercase tracking-wider block">
-                  HONORS &amp; RECOGNITION
-                </span>
-                <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-ink">
-                  Awards
-                </h2>
-              </div>
-            </div>
-
-            <a
-              href="https://bughunters.google.com/profile/19cb3404-d271-4c52-803b-cefd2acd8759"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-blueSurface border border-blueBorder text-blueSolid font-mono text-xs font-bold hover:bg-blueSolid hover:text-white transition-colors self-start sm:self-auto shadow-sm"
-            >
-              <span>Google VRP Profile</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
-
-          {/* Clean 3-Card Grid: Verified Google Security Awards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {allAwards.map((item) => (
-              <a
-                key={item.id}
-                href={item.verifyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-5 rounded-lg bg-canvas border border-borderLight hover:border-borderHover flex flex-col justify-between gap-3 transition-all hover:shadow-sm group block"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded border inline-block bg-white border-borderLight text-inkSubtle">
-                      {item.issuer}
-                    </span>
-                    <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border inline-block ${item.badgeClass}`}>
-                      {item.badge}
-                    </span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          <div>
+            <h3 className="font-mono text-xs uppercase tracking-[0.14em] text-signal mb-2">Security</h3>
+            <ul className="border-t border-char">
+              {a.map((x) => (
+                <li key={x.id} className="py-6 border-b border-rule">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h4 className="text-xl font-semibold tracking-tight text-char">{x.title}</h4>
+                    <span className="font-mono text-xs text-mute shrink-0">{x.date}</span>
                   </div>
-
-                  <h3 className="font-display font-bold text-base text-ink group-hover:text-emeraldSolid transition-colors leading-snug">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-xs text-inkMuted leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-borderLight flex items-center justify-between font-mono text-[11px] text-inkMuted">
-                  <span className="flex items-center gap-1 text-emeraldSolid font-semibold">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Verified Standing</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-inkSubtle group-hover:text-ink">
-                    <span>View Record</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </span>
-                </div>
-              </a>
-            ))}
+                  <p className="mt-1 text-charSoft">{x.issuer}</p>
+                  <p className="mt-3 text-mute leading-relaxed">{x.description}</p>
+                  {safeUrl(x.verifyUrl) && (
+                    <a
+                      href={safeUrl(x.verifyUrl)}
+                      data-track="award_verify"
+                      data-track-label={x.title}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 min-h-11 text-sm font-medium text-char underline underline-offset-4 decoration-signal"
+                    >
+                      Verify <ArrowUpRight size={14} />
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
 
+          <div>
+            <h3 className="font-mono text-xs uppercase tracking-[0.14em] text-signal mb-2">Certifications</h3>
+            <ul className="border-t border-char">
+              {c.map((x) => (
+                <li key={x.id} className="py-6 border-b border-rule">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h4 className="text-lg font-semibold tracking-tight text-char">{x.title}</h4>
+                      <p className="mt-1 text-mute">
+                        {x.issuer}
+                        {x.date ? <span> · {x.date}</span> : null}
+                      </p>
+                    </div>
+                    {safeUrl(x.verifyUrl) && (
+                      <a
+                        href={safeUrl(x.verifyUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Verify ${x.title}`}
+                        data-track="cert_verify"
+                        data-track-label={x.title}
+                        className="shrink-0 -mt-2 -mr-2 grid place-items-center w-11 h-11 text-char hover:text-signal"
+                      >
+                        <ArrowUpRight size={20} />
+                      </a>
+                    )}
+                  </div>
+                  {x.skills?.length > 0 && (
+                    <ul className="mt-4 flex flex-wrap gap-2">
+                      {x.skills.map((t: string) => (
+                        <li key={t} className="px-2.5 py-1 border border-char/30 font-mono text-xs text-charSoft">
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-
       </div>
     </section>
   );

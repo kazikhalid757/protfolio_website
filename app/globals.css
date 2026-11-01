@@ -5,8 +5,8 @@
 :root {
   color-scheme: light;
 
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  --font-sans: var(--nf-sans), 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: var(--nf-mono), 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
 
   /* Solid Light Architectural Palette */
   --bg-page: #ffffff;
@@ -464,3 +464,109 @@ code, pre, .font-mono {
   color: #FFFFFF;
 }
 
+
+/* ===== Bug cursor (public site only; the class is added by <BugCursor /> for mouse users) ===== */
+html.has-bug-cursor,
+html.has-bug-cursor * {
+  cursor: none !important;
+}
+html.has-bug-cursor input,
+html.has-bug-cursor textarea {
+  cursor: text !important;
+}
+
+.bug-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.15s ease-out;
+  will-change: transform;
+}
+.bug-cursor[data-hidden='true'] {
+  opacity: 0;
+}
+.bug-cursor__rotor {
+  position: absolute;
+  left: -17px;
+  top: -17px;
+  width: 34px;
+  height: 34px;
+  will-change: transform;
+}
+.bug-cursor__scale {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.16s ease-out;
+}
+.bug-cursor[data-hover='true'] .bug-cursor__scale {
+  transform: scale(1.3);
+}
+.bug-cursor[data-down='true'] .bug-cursor__scale {
+  transform: scale(0.72);
+}
+.bug-cursor[data-hover='true'] .bug-fill {
+  fill: #f5f2ea;
+  stroke: #121212;
+}
+.bug-cursor[data-hover='true'] .bug-seam {
+  stroke: #121212;
+}
+.bug-cursor[data-hover='true'] .bug-eye {
+  fill: #121212;
+}
+
+.bug-legs-a,
+.bug-legs-b {
+  transform-box: view-box;
+  transform-origin: 20px 22px;
+}
+.bug-antennae {
+  transform-box: view-box;
+  transform-origin: 20px 9px;
+}
+.bug-cursor.is-moving .bug-legs-a {
+  animation: bug-scuttle 0.15s ease-in-out infinite alternate;
+}
+.bug-cursor.is-moving .bug-legs-b {
+  animation: bug-scuttle 0.15s ease-in-out infinite alternate-reverse;
+}
+/* While it stands still the antennae twitch now and then. */
+.bug-cursor:not(.is-moving) .bug-antennae {
+  animation: bug-twitch 2.2s ease-in-out infinite;
+}
+@keyframes bug-twitch {
+  0%,
+  62%,
+  100% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(7deg);
+  }
+  78% {
+    transform: rotate(-6deg);
+  }
+  86% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes bug-scuttle {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bug-legs-a,
+  .bug-legs-b,
+  .bug-antennae {
+    animation: none !important;
+  }
+}
