@@ -9,7 +9,7 @@ interface SectionHeadProps {
 
 export default function SectionHead({ index, eyebrow, title, intro }: SectionHeadProps) {
   return (
-    <div className="mb-12 md:mb-16 max-w-3xl">
+    <div className="mb-8 md:mb-12 lg:mb-16 max-w-3xl">
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-mute mb-5">
         <span className="text-signal">{index}</span>
         <span className="mx-3 inline-block w-8 h-px bg-rule align-middle" />

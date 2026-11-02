@@ -66,7 +66,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
 
   return (
     <section id="contact" className="scroll-mt-20">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 md:py-28">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-16 md:py-20 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
           <div className="lg:col-span-5">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-mute mb-5">

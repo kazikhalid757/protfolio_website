@@ -24,14 +24,9 @@ export default function Hero({ profile, experiences }: HeroProps) {
 
   return (
     <section id="top" className="scroll-mt-20">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-7 pb-12 sm:pt-9 md:pt-10 md:pb-16 lg:pt-14 lg:pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start lg:items-center">
           <div className="md:col-span-7">
-            <p className="mb-5 font-mono text-xs uppercase tracking-[0.14em] text-mute">
-              {p.name}
-              {p.title ? <> · {p.title}</> : null}
-              {p.location ? <> · {p.location.split(',').slice(-2).join(',').replace(/\s*-\s*\d+/, '').trim()}</> : null}
-            </p>
             {p.availableForHire && (
               <p className="inline-flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-char mb-8">
                 <span className="w-2 h-2 bg-signal" aria-hidden />
@@ -133,7 +128,7 @@ export default function Hero({ profile, experiences }: HeroProps) {
         </div>
 
         {metrics.length > 0 && (
-          <dl className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-px bg-rule border-t border-char">
+          <dl className="mt-12 md:mt-16 lg:mt-24 grid grid-cols-2 md:grid-cols-4 gap-px bg-rule border-t border-char">
             {metrics.map(([key, value], i) => (
               <div
                 key={key}

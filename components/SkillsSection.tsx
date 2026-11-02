@@ -12,8 +12,8 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
 
   return (
     <section id="skills" className="scroll-mt-20 bg-char text-paper">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 md:py-28">
-        <div className="mb-12 md:mb-16 max-w-3xl">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-16 md:py-20 lg:py-28">
+        <div className="mb-8 md:mb-12 lg:mb-16 max-w-3xl">
           <p className="font-mono text-xs uppercase tracking-[0.18em] text-paper/60 mb-5">
             <span className="text-signal">04</span>
             <span className="mx-3 inline-block w-8 h-px bg-paper/30 align-middle" />

@@ -14,7 +14,7 @@ export default function ProductsSection({ products }: ProductsSectionProps) {
 
   return (
     <section id="products" className="scroll-mt-20">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 md:py-28">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-16 md:py-20 lg:py-28">
         <SectionHead
           index="02"
           eyebrow="Products"
