@@ -8,6 +8,7 @@ import {
   BarChart3,
   Briefcase,
   ExternalLink,
+  FileText,
   FolderGit2,
   Layers,
   LayoutDashboard,
@@ -35,6 +36,7 @@ const groups = [
     label: 'Content',
     items: [
       { name: 'Profile & hero', href: adminHref('/profile'), icon: User },
+      { name: 'Resume', href: adminHref('/resume'), icon: FileText },
       { name: 'Experience', href: adminHref('/experience'), icon: Briefcase },
       { name: 'Products', href: adminHref('/products'), icon: Package },
       { name: 'Services', href: adminHref('/services'), icon: Layers },

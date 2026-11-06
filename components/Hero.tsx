@@ -2,11 +2,13 @@ import React from 'react';
 import Image from 'next/image';
 import { ArrowDown, ArrowUpRight, Download, Github, Linkedin } from 'lucide-react';
 import { safeUrl } from '@/lib/safeUrl';
-import type { Experience, Profile } from '@/lib/schemas';
+import { RESUME_PDF_PATH, hasResume, resumeFileName } from '@/lib/resume/document';
+import type { Experience, Profile, Resume } from '@/lib/schemas';
 
 interface HeroProps {
   profile: Profile;
   experiences?: Experience[];
+  resume?: Resume;
 }
 
 const metricLabels: Record<string, string> = {
@@ -16,7 +18,7 @@ const metricLabels: Record<string, string> = {
   googleVrpAwards: 'Google VRP awards',
 };
 
-export default function Hero({ profile, experiences }: HeroProps) {
+export default function Hero({ profile, experiences, resume }: HeroProps) {
   const p = profile;
   const metrics = Object.entries(p.metrics || {}).filter(([k]) => metricLabels[k]);
   const current = experiences?.find((e) => e.period?.toLowerCase().includes('present'));
@@ -58,12 +60,11 @@ export default function Hero({ profile, experiences }: HeroProps) {
               >
                 See my work <ArrowDown size={16} />
               </a>
-              {safeUrl(p.resumeUrl) && (
+              {hasResume(resume) && (
                 <a
-                  href={safeUrl(p.resumeUrl)}
+                  href={RESUME_PDF_PATH}
+                  download={resumeFileName(resume)}
                   data-track="cv_download"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 h-12 px-6 border border-char text-char font-medium hover:bg-char hover:text-paper transition-colors"
                 >
                   Download CV <Download size={16} />

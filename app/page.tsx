@@ -21,7 +21,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-paper text-char flex flex-col">
       <Navbar profile={data.profile} />
-      <Hero profile={data.profile} experiences={data.experiences} />
+      <Hero profile={data.profile} experiences={data.experiences} resume={data.resume} />
       <ExperienceTimeline experiences={data.experiences} />
       <ProductsSection products={data.products} />
       <Services services={data.services} />

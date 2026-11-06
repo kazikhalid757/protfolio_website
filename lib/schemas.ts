@@ -141,6 +141,95 @@ export const certificationSchema = z.looseObject({
   verifyUrl: link.optional(),
 });
 
+// ------------------------------------------------------------------ resume (the downloadable PDF)
+
+export const RESUME_SECTION_KEYS = ['summary', 'skills', 'experience', 'projects', 'education', 'certifications', 'awards'] as const;
+export type ResumeSectionKey = (typeof RESUME_SECTION_KEYS)[number];
+
+export const resumeSchema = z.looseObject({
+  /** false hides the Download button and makes /resume.pdf answer 404. */
+  enabled: z.boolean().optional(),
+  name: text(100).optional(),
+  headline: text(120).optional(),
+  email: emailOrEmpty.optional(),
+  phone: text(40).optional(),
+  location: text(150).optional(),
+  website: link.optional(),
+  linkedin: link.optional(),
+  github: link.optional(),
+  summary: paragraph(1500).optional(),
+  accent: z.enum(['Navy', 'Charcoal', 'Teal', 'Burgundy']).optional(),
+  pageSize: z.enum(['A4', 'US Letter']).optional(),
+  /** Keywords from the jobs being targeted. Only used by the admin check, never printed. */
+  targetKeywords: list(60, 60).optional(),
+  /** Order and visibility of the printed sections. */
+  layout: z.array(z.looseObject({ key: z.enum(RESUME_SECTION_KEYS), visible: z.boolean().optional() })).max(RESUME_SECTION_KEYS.length).optional(),
+  skills: z.array(z.looseObject({ category: text(100).min(1, 'Group name is required'), items: list(40, 80).optional() })).max(20).optional(),
+  experience: z
+    .array(
+      z.looseObject({
+        id: text(80).optional(),
+        role: text(150).min(1, 'Role is required'),
+        company: text(150).min(1, 'Company is required'),
+        location: text(150).optional(),
+        period: text(80).optional(),
+        bullets: list(12, 600).optional(),
+      })
+    )
+    .max(30)
+    .optional(),
+  projects: z
+    .array(
+      z.looseObject({
+        id: text(80).optional(),
+        name: text(150).min(1, 'Project name is required'),
+        description: paragraph(600).optional(),
+        tech: list(20, 60).optional(),
+        url: link.optional(),
+      })
+    )
+    .max(30)
+    .optional(),
+  education: z
+    .array(
+      z.looseObject({
+        id: text(80).optional(),
+        degree: text(150).min(1, 'Degree is required'),
+        institution: text(150).min(1, 'Institution is required'),
+        location: text(150).optional(),
+        period: text(80).optional(),
+        details: text(300).optional(),
+      })
+    )
+    .max(10)
+    .optional(),
+  certifications: z
+    .array(
+      z.looseObject({
+        id: text(80).optional(),
+        title: text(200).min(1, 'Certificate name is required'),
+        issuer: text(150).optional(),
+        date: text(60).optional(),
+        url: link.optional(),
+      })
+    )
+    .max(30)
+    .optional(),
+  awards: z
+    .array(
+      z.looseObject({
+        id: text(80).optional(),
+        title: text(200).min(1, 'Award name is required'),
+        issuer: text(150).optional(),
+        date: text(60).optional(),
+        description: paragraph(400).optional(),
+        url: link.optional(),
+      })
+    )
+    .max(20)
+    .optional(),
+});
+
 /** Schema for each stored section, by name. */
 export const sectionSchemas = {
   profile: profileSchema,
@@ -151,6 +240,7 @@ export const sectionSchemas = {
   projects: z.array(projectSchema).max(80),
   awards: z.array(awardSchema).max(40),
   certifications: z.array(certificationSchema).max(40),
+  resume: resumeSchema,
 } as const;
 
 export type SectionName = keyof typeof sectionSchemas;
@@ -183,6 +273,7 @@ export type SkillCategory = z.infer<typeof skillCategorySchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type Award = z.infer<typeof awardSchema>;
 export type Certification = z.infer<typeof certificationSchema>;
+export type Resume = z.infer<typeof resumeSchema>;
 export type ContactInput = z.infer<typeof contactSchema>;
 
 /** Everything the public site renders. */
@@ -195,6 +286,7 @@ export interface PortfolioData {
   projects: Project[];
   awards: Award[];
   certifications: Certification[];
+  resume: Resume;
 }
 
 // ------------------------------------------------------------------ validation helpers

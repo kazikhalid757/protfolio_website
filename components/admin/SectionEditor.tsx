@@ -19,6 +19,8 @@ interface SectionEditorProps {
   blank?: () => any;
   addLabel?: string;
   emptyHint?: string;
+  /** Replaces the standard form when a section needs its own layout (object sections only). */
+  renderForm?: (props: { draft: any; setDraft: (next: any) => void; showErrors: boolean }) => React.ReactNode;
 }
 
 const same = (a: any, b: any) => JSON.stringify(a) === JSON.stringify(b);
@@ -32,6 +34,7 @@ export default function SectionEditor({
   blank = () => ({}),
   addLabel,
   emptyHint,
+  renderForm,
 }: SectionEditorProps) {
   const { data, versions, loading, error, saveSection, reload, setDirty, toast, confirm } = useAdmin();
   const saved = data?.[section] ?? (kind === 'list' ? [] : {});
@@ -99,7 +102,9 @@ export default function SectionEditor({
 
   return (
     <div>
-      {kind === 'object' ? (
+      {renderForm ? (
+        renderForm({ draft, setDraft, showErrors: attempted })
+      ) : kind === 'object' ? (
         <Card className="p-5 md:p-7">
           <SchemaForm fields={fields} value={draft} onChange={setDraft} showErrors={attempted} />
         </Card>

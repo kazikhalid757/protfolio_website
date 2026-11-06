@@ -6,6 +6,7 @@ import { ArrowUpRight, Check, CircleAlert } from 'lucide-react';
 import { useAdmin } from '@/components/admin/AdminContext';
 import { Badge, Card, PageHeader, Spinner } from '@/components/admin/ui';
 import { adminHref } from '@/lib/adminPath';
+import { hasResume } from '@/lib/resume/document';
 
 interface Status {
   database: { connected: boolean; latencyMs?: number };
@@ -31,7 +32,7 @@ export default function Dashboard() {
     const products = data.products || [];
     const list: { ok: boolean; label: string; fix: string; href: string }[] = [
       { ok: !!p.avatar, label: 'Profile photo set', fix: 'Add a photo path or URL', href: adminHref('/profile') },
-      { ok: !!p.resumeUrl, label: 'CV link set', fix: 'Add a CV link so the Download CV button shows', href: adminHref('/profile') },
+      { ok: hasResume(data.resume), label: 'Resume ready to download', fix: 'Fill in your resume and turn on the download', href: adminHref('/resume') },
       { ok: (p.bio || '').length >= 80, label: 'Bio is a few sentences long', fix: 'Write a bio of at least two sentences', href: adminHref('/profile') },
       { ok: !!(p.socials?.linkedin && p.socials?.github), label: 'LinkedIn and GitHub linked', fix: 'Add both links', href: adminHref('/profile') },
       {

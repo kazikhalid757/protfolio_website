@@ -5,13 +5,14 @@ All endpoints are same-origin JSON. Errors always look like `{ "error": "message
 Types come from [`lib/schemas.ts`](../lib/schemas.ts): `Profile`, `Experience`, `Product`, `Service`, `SkillCategory`,
 `Project`, `Award`, `Certification`, `PortfolioData`, `ContactInput`. The same schemas validate every write.
 
-Sections: `profile`, `experiences`, `products`, `services`, `skills`, `projects`, `awards`, `certifications`.
+Sections: `profile`, `experiences`, `products`, `services`, `skills`, `projects`, `awards`, `certifications`, `resume`.
 
 ## Public (no sign-in)
 
 | Method | Path | Returns |
 | --- | --- | --- |
 | GET | `/api/content` | The whole portfolio (`PortfolioData`). Cached, refreshed the moment the admin saves. |
+| GET | `/resume.pdf` | The resume as a PDF download, built from the saved `resume` section. `404` when the download is turned off or no name is set. |
 | GET | `/api/content/{section}` | `{ section, data }`. `404` for an unknown section. |
 | GET | `/api/health` | `{ status: "ok" \| "degraded", database: "ok" \| "down" \| "not_configured", latencyMs }`. `503` when degraded. |
 | POST | `/api/contact` | Body `{ name, email, subject?, message, website?, elapsed? }` → `{ success: true }`. `400` invalid, `429` too many, `503` could not be delivered. |
@@ -44,6 +45,7 @@ Mutating requests (`POST/PUT/PATCH/DELETE`) from another origin are rejected wit
 | PATCH | `/api/admin/portfolio` | Body `{ section, value, expectedVersion? }` → `{ section, value, version }`. `400` validation (see `details`), `409` if `expectedVersion` is stale. |
 | PUT | `/api/admin/portfolio` | Replace everything (Import). Validated first and written in one transaction. |
 | POST | `/api/admin/portfolio/reset` | Replace everything with `data/default-portfolio.json`. |
+| POST | `/api/admin/resume/pdf` | Body `{ value }` → a PDF of the unsaved draft, with the page count in `X-Resume-Pages`. Stores nothing. `400` validation (see `details`). |
 | GET | `/api/admin/portfolio/revisions?section=X` | `{ revisions: [{ id, version, actor, createdAt }] }` (latest 30; 50 are kept). |
 | GET | `/api/admin/portfolio/revisions?section=X&id=N` | `{ data }`, the saved content of that version. |
 | GET | `/api/admin/messages` | `{ messages, available, emailDelivery }`. |

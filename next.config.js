@@ -15,9 +15,13 @@ const nextConfig = {
     ],
   },
   experimental: {
+    // pdfkit reads its font metrics from its own folder at run time, so it must not be bundled.
+    serverComponentsExternalPackages: ['pdfkit'],
     // The public pages read data/*.json with fs at request time; make sure it ships with the deployment.
     outputFileTracingIncludes: {
       '/**': ['./data/**/*'],
+      '/resume.pdf': ['./node_modules/pdfkit/js/data/**/*'],
+      '/api/admin/resume/pdf': ['./node_modules/pdfkit/js/data/**/*'],
     },
   },
 };

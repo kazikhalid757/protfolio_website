@@ -17,7 +17,6 @@ export const profileFields: Field[] = [
   { type: 'tel', key: 'phone', label: 'Phone', help: 'Optional. Shown in the contact section.' },
   { type: 'text', key: 'location', label: 'Location' },
   { type: 'url', key: 'avatar', label: 'Photo', placeholder: '/images/kazi-tamim.jpg', help: 'A path inside /public (like /images/me.jpg) or a full https:// image URL.' },
-  { type: 'url', key: 'resumeUrl', label: 'CV / resume link', help: 'The "Download CV" button. Leave empty to hide it.' },
   { type: 'url', key: 'siteUrl', label: 'Website address', placeholder: 'https://yourname.dev', help: 'Used for SEO tags and the sitemap. On Vercel it falls back to your production URL.' },
   { type: 'boolean', key: 'availableForHire', label: 'Show "available for work" badge' },
   { type: 'text', key: 'availabilityStatus', label: 'Availability text', placeholder: 'Available for Full-time Roles & Contracts' },
@@ -163,3 +162,143 @@ export const certificationItem = {
   itemSubtitle: (c: any) => [c.issuer, c.date].filter(Boolean).join(' · '),
   blank: () => ({ id: newId('cert'), title: '', issuer: '', date: '', skills: [], verifyUrl: '', image: '' }),
 };
+
+// ------------------------------------------------------------------ resume (the downloadable PDF)
+
+const DATE_HELP = 'Use one format everywhere, like "Sep 2024 – Jul 2025". Parsers read these to work out your experience.';
+
+export const resumeBasicsFields: Field[] = [
+  { type: 'boolean', key: 'enabled', label: 'Offer the resume for download', help: 'Off hides the Download CV button and takes /resume.pdf offline.' },
+  { type: 'text', key: 'name', label: 'Full name', required: true },
+  { type: 'text', key: 'headline', label: 'Job title', placeholder: 'QA & Test Automation Engineer', help: 'Match the title of the jobs you apply for.' },
+  { type: 'email', key: 'email', label: 'Email', required: true },
+  { type: 'tel', key: 'phone', label: 'Phone', help: 'Include the country code.' },
+  { type: 'text', key: 'location', label: 'Location', placeholder: 'Dhaka, Bangladesh' },
+  { type: 'url', key: 'linkedin', label: 'LinkedIn' },
+  { type: 'url', key: 'github', label: 'GitHub' },
+  { type: 'url', key: 'website', label: 'Portfolio website' },
+  { type: 'select', key: 'accent', label: 'Accent color', options: ['Navy', 'Charcoal', 'Teal', 'Burgundy'], help: 'Used for your name and the section headings.' },
+  { type: 'select', key: 'pageSize', label: 'Paper size', options: ['A4', 'US Letter'], help: 'US Letter for the US and Canada, A4 almost everywhere else.' },
+];
+
+export const resumeContentFields: Field[] = [
+  { type: 'textarea', key: 'summary', label: 'Professional summary', rows: 6, help: '30 to 100 words: your role, experience, main tools and what you bring.' },
+  { type: 'tags', key: 'targetKeywords', label: 'Target keywords', help: 'Not printed. Paste terms from a job post and the check on the Preview tab shows which ones your resume is missing.' },
+];
+
+export const resumeSkillFields: Field[] = [
+  {
+    type: 'list',
+    key: 'skills',
+    label: 'Skill groups',
+    addLabel: 'Add a skill group',
+    itemTitle: (s: any) => s.category,
+    blank: () => ({ category: '', items: [] }),
+    fields: [
+      { type: 'text', key: 'category', label: 'Group name', required: true, placeholder: 'Test Automation' },
+      { type: 'tags', key: 'items', label: 'Skills', help: 'Spell tools out the way job posts do. Press Enter or comma after each one.' },
+    ],
+  },
+];
+
+export const resumeExperienceFields: Field[] = [
+  {
+    type: 'list',
+    key: 'experience',
+    label: 'Jobs',
+    help: 'Newest first. Use the arrows to reorder.',
+    addLabel: 'Add a job',
+    itemTitle: (e: any) => [e.role, e.company].filter(Boolean).join(', '),
+    blank: () => ({ id: newId('resume-exp'), role: '', company: '', location: '', period: '', bullets: [] }),
+    fields: [
+      { type: 'text', key: 'role', label: 'Job title', required: true },
+      { type: 'text', key: 'company', label: 'Company', required: true },
+      { type: 'text', key: 'location', label: 'Location or work mode', placeholder: 'Dhaka, Bangladesh' },
+      { type: 'text', key: 'period', label: 'Dates', placeholder: 'Sep 2024 – Jul 2025', help: DATE_HELP },
+      { type: 'lines', key: 'bullets', label: 'What you did', rows: 7, help: 'One bullet per line. Start with a verb, and add a number where you have a real one.' },
+    ],
+  },
+];
+
+export const resumeProjectFields: Field[] = [
+  {
+    type: 'list',
+    key: 'projects',
+    label: 'Projects',
+    help: 'Your strongest first.',
+    addLabel: 'Add a project',
+    itemTitle: (p: any) => p.name,
+    blank: () => ({ id: newId('resume-proj'), name: '', description: '', tech: [], url: '' }),
+    fields: [
+      { type: 'text', key: 'name', label: 'Project name', required: true },
+      { type: 'url', key: 'url', label: 'Link', help: 'Printed as readable text, so it also works on paper.' },
+      { type: 'tags', key: 'tech', label: 'Tools & tech' },
+      { type: 'textarea', key: 'description', label: 'Description', rows: 3, help: 'One or two lines.' },
+    ],
+  },
+];
+
+export const resumeEducationFields: Field[] = [
+  {
+    type: 'list',
+    key: 'education',
+    label: 'Education',
+    addLabel: 'Add education',
+    itemTitle: (e: any) => e.degree,
+    blank: () => ({ id: newId('resume-edu'), degree: '', institution: '', location: '', period: '', details: '' }),
+    fields: [
+      { type: 'text', key: 'degree', label: 'Degree', required: true },
+      { type: 'text', key: 'institution', label: 'Institution', required: true },
+      { type: 'text', key: 'location', label: 'Location' },
+      { type: 'text', key: 'period', label: 'Dates', placeholder: 'Jan 2018 – Dec 2022' },
+      { type: 'text', key: 'details', label: 'Details', placeholder: 'CGPA, honors, relevant coursework' },
+    ],
+  },
+];
+
+export const resumeCertificationFields: Field[] = [
+  {
+    type: 'list',
+    key: 'certifications',
+    label: 'Certifications',
+    addLabel: 'Add a certification',
+    itemTitle: (c: any) => c.title,
+    blank: () => ({ id: newId('resume-cert'), title: '', issuer: '', date: '', url: '' }),
+    fields: [
+      { type: 'text', key: 'title', label: 'Certificate', required: true },
+      { type: 'text', key: 'issuer', label: 'Issued by' },
+      { type: 'text', key: 'date', label: 'Date', placeholder: 'Jan 2023' },
+      { type: 'url', key: 'url', label: 'Link' },
+    ],
+  },
+];
+
+export const resumeAwardFields: Field[] = [
+  {
+    type: 'list',
+    key: 'awards',
+    label: 'Awards',
+    addLabel: 'Add an award',
+    itemTitle: (a: any) => a.title,
+    blank: () => ({ id: newId('resume-award'), title: '', issuer: '', date: '', description: '', url: '' }),
+    fields: [
+      { type: 'text', key: 'title', label: 'Award', required: true },
+      { type: 'text', key: 'issuer', label: 'Given by' },
+      { type: 'text', key: 'date', label: 'Date', placeholder: 'Aug 2025' },
+      { type: 'url', key: 'url', label: 'Link' },
+      { type: 'textarea', key: 'description', label: 'Description', rows: 2 },
+    ],
+  },
+];
+
+/** Every resume field, so the save check covers tabs that are not open. */
+export const resumeFields: Field[] = [
+  ...resumeBasicsFields,
+  ...resumeContentFields,
+  ...resumeSkillFields,
+  ...resumeExperienceFields,
+  ...resumeProjectFields,
+  ...resumeEducationFields,
+  ...resumeCertificationFields,
+  ...resumeAwardFields,
+];

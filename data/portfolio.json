@@ -765,5 +765,353 @@
         "ADB"
       ]
     }
-  ]
+  ],
+  "resume": {
+    "enabled": true,
+    "name": "Kazi Khalid Hasan Tamim",
+    "headline": "QA & Test Automation Engineer",
+    "email": "kazikhalid757@gmail.com",
+    "phone": "+8801784413139",
+    "location": "Dhaka-1212, Bangladesh",
+    "website": "https://kazitamim.vercel.app/",
+    "linkedin": "https://www.linkedin.com/in/kazi-khalid-hasan-tamim-bba115220/",
+    "github": "https://github.com/kazikhalid757",
+    "accent": "Navy",
+    "pageSize": "A4",
+    "summary": "QA & Test Automation Engineer with 2+ years of experience ensuring product quality across web, mobile and API platforms, from hands-on manual testing to automation running in CI/CD. Skilled in Cypress, Playwright, Selenium, Appium, Postman, REST Assured and JMeter, working in Agile teams with Jenkins and GitHub Actions. Designs efficient test strategies, reduces defects and improves delivery speed through clear communication, strong ownership and close collaboration with cross-functional teams.",
+    "targetKeywords": [
+      "Test Automation",
+      "Manual Testing",
+      "Regression Testing",
+      "API Testing",
+      "Performance Testing",
+      "Selenium",
+      "Playwright",
+      "Cypress",
+      "Appium",
+      "Postman",
+      "JMeter",
+      "CI/CD",
+      "Jenkins",
+      "GitHub Actions",
+      "Agile",
+      "Jira"
+    ],
+    "layout": [
+      {
+        "key": "summary",
+        "visible": true
+      },
+      {
+        "key": "skills",
+        "visible": true
+      },
+      {
+        "key": "experience",
+        "visible": true
+      },
+      {
+        "key": "projects",
+        "visible": true
+      },
+      {
+        "key": "education",
+        "visible": true
+      },
+      {
+        "key": "certifications",
+        "visible": true
+      },
+      {
+        "key": "awards",
+        "visible": true
+      }
+    ],
+    "skills": [
+      {
+        "category": "Test Automation",
+        "items": [
+          "Selenium WebDriver",
+          "Selenium Grid",
+          "Playwright",
+          "Cypress",
+          "Appium",
+          "Robot Framework"
+        ]
+      },
+      {
+        "category": "Frameworks & Reporting",
+        "items": [
+          "TestNG",
+          "JUnit",
+          "Cucumber (BDD)",
+          "Page Object Model (POM)",
+          "Allure",
+          "Extent Reports"
+        ]
+      },
+      {
+        "category": "API Testing",
+        "items": [
+          "Postman",
+          "Newman",
+          "Swagger / OpenAPI",
+          "REST Assured",
+          "Karate DSL"
+        ]
+      },
+      {
+        "category": "Performance Testing",
+        "items": [
+          "Apache JMeter",
+          "k6",
+          "Locust"
+        ]
+      },
+      {
+        "category": "Testing Types",
+        "items": [
+          "Functional Testing",
+          "Regression Testing",
+          "Smoke & Sanity Testing",
+          "Exploratory Testing",
+          "Acceptance Testing (UAT)",
+          "Black Box & White Box Testing",
+          "Mobile Testing (Android & iOS)"
+        ]
+      },
+      {
+        "category": "QA Process",
+        "items": [
+          "Test Planning",
+          "Test Case Design",
+          "Test Execution",
+          "Test Coverage Analysis",
+          "Requirements Analysis",
+          "Defect Tracking",
+          "Bug Reporting",
+          "Root Cause Analysis",
+          "Jira",
+          "Agile / Scrum"
+        ]
+      },
+      {
+        "category": "CI/CD & DevOps",
+        "items": [
+          "Jenkins",
+          "GitHub Actions",
+          "GitLab",
+          "CircleCI",
+          "Docker",
+          "Git",
+          "AWS"
+        ]
+      },
+      {
+        "category": "Programming Languages",
+        "items": [
+          "Java",
+          "JavaScript",
+          "TypeScript",
+          "Python",
+          "SQL",
+          "C"
+        ]
+      },
+      {
+        "category": "Soft Skills",
+        "items": [
+          "Critical Thinking",
+          "Team Collaboration",
+          "Attention to Detail",
+          "Project Coordination"
+        ]
+      }
+    ],
+    "experience": [
+      {
+        "id": "resume-exp-1",
+        "role": "Junior SQA & Project Manager",
+        "company": "SoftStandard Solutions",
+        "location": "Hybrid",
+        "period": "Sep 2025 – Present",
+        "bullets": [
+          "Perform end-to-end testing of web and mobile applications, including Oppora.ai, an AI platform for B2B lead generation and outreach, across lead finder, sequences and CRM sync.",
+          "Conduct functional, regression, system and exploratory testing based on test cases and requirements.",
+          "Automate stable flows with Playwright and Python, with GitHub Actions quality gates that block failing merges.",
+          "Execute load and performance tests using Apache JMeter.",
+          "Report defects with clear, actionable bug reports and support defect triage with the development team.",
+          "Assist in managing small projects, including planning, tracking, release coordination and communication."
+        ]
+      },
+      {
+        "id": "resume-exp-2",
+        "role": "QA & Test Automation Engineer",
+        "company": "After20solutions",
+        "location": "Remote",
+        "period": "Sep 2024 – Jul 2025",
+        "bullets": [
+          "Designed and executed detailed manual test cases for functional and regression testing of a smart car management SaaS, achieving a 30% improvement.",
+          "Built Cypress and Selenium Grid suites for stable web flows, and wired REST Assured API regression into Jenkins.",
+          "Maintained cross-browser coverage across Chrome, Firefox, Safari and Edge.",
+          "Logged and tracked bugs in Jira, providing actionable defect reports to support efficient resolution.",
+          "Collaborated with developers and product owners to clarify requirements, reducing misunderstandings and rework.",
+          "Participated in sprint planning, daily stand-ups and retrospectives in an Agile environment."
+        ]
+      },
+      {
+        "id": "resume-exp-3",
+        "role": "SQA Engineer",
+        "company": "Hishabee",
+        "location": "Dhaka, Bangladesh",
+        "period": "Nov 2023 – Apr 2024",
+        "bullets": [
+          "Designed test scenarios and executed 100+ test cases for POS, inventory and ERP flows on web and mobile.",
+          "Built test automation scripts with Java and Selenium, reducing manual QA time by 40%.",
+          "Conducted API and manual testing to validate feature accuracy before release.",
+          "Detected and documented major and minor bugs, collaborating with developers for timely resolution.",
+          "Improved testing processes by introducing modular, reusable test case libraries."
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "id": "resume-proj-1",
+        "name": "BugViso: Website Audit Platform (Founder)",
+        "url": "https://bugviso.com",
+        "tech": [
+          "Playwright",
+          "Chromium",
+          "Redis"
+        ],
+        "description": "Website auditor that runs 25 engines in a real browser across SEO, performance, security and accessibility, with 74 checks per page, then generates code fixes and white-label PDF reports."
+      },
+      {
+        "id": "resume-proj-2",
+        "name": "RoleRival: API Security Testing Tool (Founder)",
+        "url": "https://rolerival.com",
+        "tech": [
+          "API Security",
+          "Authorization Testing"
+        ],
+        "description": "API security automation tool that exercises endpoints as different users and roles, so broken access control is caught before release."
+      },
+      {
+        "id": "resume-proj-3",
+        "name": "Dockerized Jenkins Pipelines",
+        "url": "https://github.com/kazikhalid757/Web-Automation-with-Docker-Jenkins-Pipeline",
+        "tech": [
+          "Selenium",
+          "Docker",
+          "Jenkins"
+        ],
+        "description": "CI pipeline that runs a Selenium suite in headless Docker containers, with automated triggers and test reports."
+      },
+      {
+        "id": "resume-proj-4",
+        "name": "Web Automation with Selenium Grid",
+        "url": "https://github.com/kazikhalid757/Web-Automation-With-Selenium-Grid",
+        "tech": [
+          "Selenium Grid",
+          "Docker"
+        ],
+        "description": "Distributed test infrastructure for parallel execution across browsers, reaching 4x parallel throughput."
+      },
+      {
+        "id": "resume-proj-5",
+        "name": "Playwright Web Automation (JavaScript)",
+        "url": "https://github.com/kazikhalid757/Palywrite-web-automation-with-js",
+        "tech": [
+          "Playwright",
+          "JavaScript",
+          "Cucumber"
+        ],
+        "description": "Automated E2E tests using Page Object Model and Cucumber, with parallel cross-browser runs."
+      },
+      {
+        "id": "resume-proj-6",
+        "name": "Android Automation with Robot Framework",
+        "url": "https://github.com/kazikhalid757/Android-App-Automation-Robot-Framework-",
+        "tech": [
+          "Robot Framework",
+          "Appium"
+        ],
+        "description": "Keyword-driven, Appium-based Android test suite covering 85+ critical mobile scenarios."
+      },
+      {
+        "id": "resume-proj-7",
+        "name": "API Testing with REST Assured & GitHub Actions",
+        "url": "https://github.com/kazikhalid757/API-testing-restassured-github-actions",
+        "tech": [
+          "REST Assured",
+          "Java",
+          "GitHub Actions"
+        ],
+        "description": "RESTful API test suite in CI covering 140+ endpoints, asserting JSON schemas, auth and status codes."
+      },
+      {
+        "id": "resume-proj-8",
+        "name": "Karate DSL API Testing",
+        "url": "https://github.com/kazikhalid757/Karate-DSL-API-Testing",
+        "tech": [
+          "Karate DSL",
+          "GitHub Actions"
+        ],
+        "description": "BDD API tests with complete CRUD coverage, running in GitHub workflows."
+      },
+      {
+        "id": "resume-proj-9",
+        "name": "Load Testing with Apache JMeter",
+        "url": "https://github.com/kazikhalid757/Load-testing-using-Apache-JMeter",
+        "tech": [
+          "Apache JMeter"
+        ],
+        "description": "Performance test suite simulating up to 5,000 concurrent threads to measure latency and throughput."
+      }
+    ],
+    "education": [
+      {
+        "id": "resume-edu-1",
+        "degree": "BSc in Computer Science and Engineering (CSE)",
+        "institution": "Daffodil International University",
+        "location": "Dhaka, Bangladesh",
+        "period": "",
+        "details": ""
+      }
+    ],
+    "certifications": [
+      {
+        "id": "resume-cert-1",
+        "title": "Databases and SQL for Data Science with Python (with Honors)",
+        "issuer": "Coursera",
+        "date": "Jan 2023",
+        "url": ""
+      },
+      {
+        "id": "resume-cert-2",
+        "title": "Problem Solving (Basic) Certificate (Python)",
+        "issuer": "HackerRank",
+        "date": "Jan 2023",
+        "url": ""
+      }
+    ],
+    "awards": [
+      {
+        "id": "resume-award-1",
+        "title": "Snake Achievement Award",
+        "issuer": "Google Bug Hunters",
+        "date": "2025",
+        "description": "Awarded by Google Security for a verified security vulnerability report.",
+        "url": ""
+      },
+      {
+        "id": "resume-award-2",
+        "title": "First Report Submitted Award",
+        "issuer": "Google Bug Hunters",
+        "date": "Aug 2025",
+        "description": "Verified bug report submitted to Google's Vulnerability Reward Program (VRP).",
+        "url": ""
+      }
+    ]
+  }
 }

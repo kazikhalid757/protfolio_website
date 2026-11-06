@@ -72,11 +72,18 @@ const emptyPortfolio = (): PortfolioData => ({
   projects: [],
   awards: [],
   certifications: [],
+  resume: {},
 });
 
 function assemble(rows: { section: string; data: unknown }[]): PortfolioData {
   const out: any = emptyPortfolio();
   for (const row of rows) if ((SECTION_NAMES as string[]).includes(row.section)) out[row.section] = row.data;
+  // A section added after the database was first seeded has no row yet: show the bundled copy until it is saved.
+  const missing = SECTION_NAMES.filter((name) => !rows.some((row) => row.section === name));
+  if (missing.length) {
+    const seed: any = getSeedData();
+    for (const name of missing) if (seed?.[name] !== undefined) out[name] = seed[name];
+  }
   return out;
 }
 
@@ -88,7 +95,7 @@ const readCached = unstable_cache(
     if (!rows.some((r) => r.section === 'profile')) throw new Error('content has not been set up yet');
     return assemble(rows as any);
   },
-  ['portfolio-content-v1'],
+  ['portfolio-content-v2'],
   { tags: [CONTENT_TAG], revalidate: 300 }
 );
 
@@ -108,7 +115,7 @@ const readUpdatedAt = unstable_cache(
     if (!rows[0]?.t) throw new Error('no content');
     return new Date(rows[0].t).toISOString();
   },
-  ['portfolio-updated-v1'],
+  ['portfolio-updated-v2'],
   { tags: [CONTENT_TAG], revalidate: 300 }
 );
 
@@ -139,11 +146,11 @@ export interface AdminContent {
   updatedAt: Partial<Record<SectionName, string>>;
 }
 
-/** Fresh (uncached) content for the editor. Seeds an empty database from the bundled file on first use. */
+/** Fresh (uncached) content for the editor. Seeds missing sections from the bundled file; existing ones are never overwritten. */
 export async function loadForAdmin(actor = 'admin'): Promise<AdminContent> {
   const q = sql();
   let rows = await q`SELECT section, data, version, updated_at FROM portfolio.site_content`;
-  if (rows.length === 0) {
+  if (SECTION_NAMES.some((name) => !rows.some((r) => r.section === name))) {
     const seed = getSeedData();
     if (seed) {
       await seedIfEmpty(q as any, seed as any, actor);
